@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using Newtonsoft.Json;
 using UnityEngine;
-using Object = System.Object;
+using UnityEngine.Networking;
+using UnityEngine.UI;
 
 namespace Dmicade
 {
@@ -12,37 +12,48 @@ namespace Dmicade
     {
         
         SortedList<string, DmicAppData> AppData = new SortedList<string, DmicAppData>();
-        
-        
+
         // Start is called before the first frame update
         void Start()
-        {
-            LoadAppData(@"C:\Users\BenKr\Documents\DMI-CADE\vm_shared_folder\dmic-apps");
-        }
-
-        // Update is called once per frame
-        void Update()
         {
             
         }
 
+        /// <summary>
+        /// TODO doc
+        /// </summary>
+        /// <param name="appsLocation"></param>
         private void LoadAppData(string appsLocation)
         {
             string[] appFolders = Directory.GetDirectories(appsLocation);
             foreach (string appFolder in appFolders)
             {
                 string appName = appFolder.Substring(appFolder.LastIndexOf('\\') + 1);
-                AppData[appName] = new DmicAppData(appName);
-                Debug.Log(appName);
+                try
+                {
+                    AppData.Add(appName, DmicAppData.CreateFromJson(appName, appsLocation));
+                } catch (DirectoryNotFoundException dirNotFoundException)
+                {
+                    Debug.LogWarning("Could not load: " + appName + 
+                                     "\nReason: " + dirNotFoundException.Message);
+
+                    break;
+                }
+
+                AppData[appName].LoadLogoImage(appsLocation);
+                // Debug.Log("Configured: " + AppData[appName].Name);
             }
 
-            //DmicAppData appData = new DmicAppData("example-app");
-            //appData.LoadPreviewConfigs(appsLocation);
-
-            DmicAppDataSimple testAppData = DmicAppDataSimple.CreateFromJson(appsLocation, "example-app");
-            Debug.Log(testAppData);
+            //_rawImage = imageObject.GetComponent<RawImage>();
+            //_rawImage.texture = AppData["example-app"].logoTexture;
+            //imageObject.GetComponent<RectTransform>().sizeDelta = new Vector2(_rawImage.texture.width, _rawImage.texture.height);
         }
 
+        /// <summary>
+        /// TODO doc
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public DmicAppData GetAppDataByIndex(int index)
         {
             return AppData.Values[index % AppData.Count];
