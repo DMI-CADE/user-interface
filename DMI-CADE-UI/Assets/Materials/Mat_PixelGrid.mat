@@ -98,11 +98,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - Vector1_1d438bb7cbd043e49a9d3cc77062af76: 1.25
-    - Vector1_476b19f7fccb47f8af79682fb0629ec6: 0.06
+    - Vector1_476b19f7fccb47f8af79682fb0629ec6: 0.01
     - Vector1_a8e71eb9fa634f22aef155ffe6a44ba6: 1
     - Vector1_af48ac61443540fd9dba41fb52d3412c: 1000
     - Vector1_f329badae88b4f87b4f300d7d9451bce: 0.25
-    - Vector1_f5478cef55654ad4b9691a05c748035f: 0.15
+    - Vector1_f5478cef55654ad4b9691a05c748035f: 0.025
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -137,6 +137,6 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Fade_Origin: {r: 0, g: 0, b: 0, a: 0}
-    - _GridColor: {r: 0, g: 1.3176471, b: 5.992157, a: 0}
+    - _GridColor: {r: 0, g: 0.65882355, b: 2.9960785, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
