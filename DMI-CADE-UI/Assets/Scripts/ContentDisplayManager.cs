@@ -90,6 +90,9 @@ namespace Dmicade
                 // TODO rotation
 
                 // Data
+                // Skip data setup when no data is present.
+                if (contentDataManager.AppAmount == 0) break;
+                
                 bool isOverlap = i >= visibleElements;
                 
                 ReadyDisplayElement(i);

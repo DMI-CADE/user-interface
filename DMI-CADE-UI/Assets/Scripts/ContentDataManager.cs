@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -33,7 +34,17 @@ namespace Dmicade
         /// <param name="appsLocation"></param>
         private void LoadAppData(string appsLocation)
         {
-            string[] appFolders = Directory.GetDirectories(appsLocation);
+            string[] appFolders = new string[0];
+            
+            try
+            {
+                appFolders = Directory.GetDirectories(appsLocation);
+            }
+            catch (ArgumentException e)
+            {
+                Debug.LogWarning("App path not correctly configured, can not load app data:\n" + e);
+            }
+            
             foreach (string appFolder in appFolders)
             {
                 string appName = appFolder.Substring(appFolder.LastIndexOf('\\') + 1);
