@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -29,8 +26,11 @@ namespace Dmicade
         public string release;
 
         public string moreInfoText;
-
-        public Texture2D logoTexture = new Texture2D(2, 2);
+        
+        //Images
+        public Sprite logoSprite;
+        private const int PixelsPerUnit = 100;
+        //private Texture2D _logoTexture;
 
         /// <summary>
         /// Creates a new DmicAppData instance with values from its preview config.</summary>
@@ -76,11 +76,16 @@ namespace Dmicade
         /// TODO doc
         /// </summary>
         /// <param name="appsLocation"></param>
-        public void LoadLogoImage(string appsLocation)
+        public void LoadLogoSprite(string appsLocation)
         {
             if (logo == null) return;
 
-            logoTexture = LoadImage(appsLocation, logo);
+            var logoTexture = LoadImage(appsLocation, logo);
+            
+            logoSprite = Sprite.Create(logoTexture,
+                new Rect(0, 0, logoTexture.width, logoTexture.height), 
+                new Vector2(0, 0), 
+                PixelsPerUnit);
         }
 
         /// <summary>

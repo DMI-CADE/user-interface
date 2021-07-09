@@ -1,22 +1,31 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.UI;
 
 namespace Dmicade
 {
     public class ContentDataManager : MonoBehaviour
     {
+        [SerializeField] private string DmicAppsLocation;
         
-        SortedList<string, DmicAppData> AppData = new SortedList<string, DmicAppData>();
+        private Dictionary<string, DmicAppData> AppData = new Dictionary<string, DmicAppData>();
 
-        // Start is called before the first frame update
-        void Start()
+        public int AppAmount => AppData.Count;
+        public string[] AppNames => AppData.Keys.ToArray();
+
+        /// <summary>Returns app data from the pool.</summary>
+        /// <param name="appId">the name of the app.</param>
+        /// <returns>The app data.</returns>
+        public DmicAppData GetApp(string appId)
         {
-            
+            return AppData[appId];
+        }
+
+        private void Awake()
+        {
+            LoadAppData(DmicAppsLocation);
         }
 
         /// <summary>
@@ -25,7 +34,17 @@ namespace Dmicade
         /// <param name="appsLocation"></param>
         private void LoadAppData(string appsLocation)
         {
-            string[] appFolders = Directory.GetDirectories(appsLocation);
+            string[] appFolders = new string[0];
+            
+            try
+            {
+                appFolders = Directory.GetDirectories(appsLocation);
+            }
+            catch (ArgumentException e)
+            {
+                Debug.LogWarning("App path not correctly configured, can not load app data:\n" + e);
+            }
+            
             foreach (string appFolder in appFolders)
             {
                 string appName = appFolder.Substring(appFolder.LastIndexOf('\\') + 1);
@@ -40,23 +59,8 @@ namespace Dmicade
                     break;
                 }
 
-                AppData[appName].LoadLogoImage(appsLocation);
-                // Debug.Log("Configured: " + AppData[appName].Name);
+                AppData[appName].LoadLogoSprite(appsLocation); // TODO load async
             }
-
-            //_rawImage = imageObject.GetComponent<RawImage>();
-            //_rawImage.texture = AppData["example-app"].logoTexture;
-            //imageObject.GetComponent<RectTransform>().sizeDelta = new Vector2(_rawImage.texture.width, _rawImage.texture.height);
-        }
-
-        /// <summary>
-        /// TODO doc
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public DmicAppData GetAppDataByIndex(int index)
-        {
-            return AppData.Values[index % AppData.Count];
         }
     }
 }
