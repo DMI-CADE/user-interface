@@ -1,11 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.UI;
 
 namespace Dmicade
 {
@@ -17,7 +13,14 @@ namespace Dmicade
 
         public int AppAmount => AppData.Count;
         public string[] AppNames => AppData.Keys.ToArray();
-        
+
+        /// <summary>Returns app data from the pool.</summary>
+        /// <param name="appId">the name of the app.</param>
+        /// <returns>The app data.</returns>
+        public DmicAppData GetApp(string appId)
+        {
+            return AppData[appId];
+        }
 
         private void Awake()
         {
@@ -45,13 +48,8 @@ namespace Dmicade
                     break;
                 }
 
-                AppData[appName].LoadLogoImage(appsLocation); // TODO load async
-                // Debug.Log("Configured: " + AppData[appName].Name);
+                AppData[appName].LoadLogoSprite(appsLocation); // TODO load async
             }
-
-            //_rawImage = imageObject.GetComponent<RawImage>();
-            //_rawImage.texture = AppData["example-app"].logoTexture;
-            //imageObject.GetComponent<RectTransform>().sizeDelta = new Vector2(_rawImage.texture.width, _rawImage.texture.height);
         }
     }
 }
