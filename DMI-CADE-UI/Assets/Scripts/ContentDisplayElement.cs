@@ -1,3 +1,4 @@
+using System;
 using Pooling;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,17 +6,16 @@ using UnityEngine.UI;
 public class ContentDisplayElement : MonoBehaviour
 {
     public Image logoImage;
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public RectTransform rectTransform;
 
-    // Update is called once per frame
-    void Update()
+    public void Move(Vector3 direction, LeanTweenType ease, float time, Action callback)
     {
-        
+        LeanTween.move(gameObject, transform.position + direction, time).setEase(ease).setOnComplete(callback);
+    }
+    
+    public void Move(Vector3 direction, LeanTweenType ease, float time)
+    {
+        LeanTween.move(gameObject, transform.position + direction, time).setEase(ease);
     }
 
     public void ReturnToPool()

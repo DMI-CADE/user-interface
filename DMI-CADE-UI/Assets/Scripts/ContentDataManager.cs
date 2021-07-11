@@ -40,9 +40,14 @@ namespace Dmicade
             {
                 appFolders = Directory.GetDirectories(appsLocation);
             }
-            catch (ArgumentException e)
+            catch (Exception e)
             {
-                Debug.LogWarning("App path not correctly configured, can not load app data:\n" + e);
+                if (e is ArgumentException || e is DirectoryNotFoundException)
+                {
+                    Debug.LogWarning("App path not correctly configured, can not load app data:\n" + e);
+                }
+                else
+                    throw;
             }
             
             foreach (string appFolder in appFolders)
