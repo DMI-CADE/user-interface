@@ -8,7 +8,9 @@ namespace Dmicade
 {
     public class ContentDataManager : MonoBehaviour
     {
-        [SerializeField] private string DmicAppsLocation;
+        public static ContentDataManager Instance { get; private set; }
+        
+        public string DmicAppsLocation;
         
         private Dictionary<string, DmicAppData> AppData = new Dictionary<string, DmicAppData>();
 
@@ -25,6 +27,8 @@ namespace Dmicade
 
         private void Awake()
         {
+            Instance = this;
+                
             LoadAppData(DmicAppsLocation);
         }
 

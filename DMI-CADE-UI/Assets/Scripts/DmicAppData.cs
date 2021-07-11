@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.IO;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -26,6 +27,9 @@ namespace Dmicade
         public string release;
 
         public string moreInfoText;
+
+        public string infoFormatted;
+        public string descriptorFormatted;
         
         //Images
         public Sprite logoSprite;
@@ -48,6 +52,8 @@ namespace Dmicade
 
             DmicAppData newAppData = JsonUtility.FromJson<DmicAppData>(jsonText);
             newAppData.Name = name;
+            
+            newAppData.SetVideoPaths(dmicAppsLocation);
             
             return newAppData;
         }
@@ -88,6 +94,19 @@ namespace Dmicade
                 PixelsPerUnit);
         }
 
+        /// Use only when <see cref="Name"/> is set correctly. TODO doc
+        public void SetVideoPaths(string dmicAppsLocation)
+        {
+            ArrayList videoUris = new ArrayList();
+            for (int i = 0; i < videos.Length; i++)
+            {
+                if (videos[i].Length != 0)
+                    videoUris.Add(Path.Combine(dmicAppsLocation, Name, @"PreviewMedia", videos[i]));
+            }
+
+            videos = (string[]) videoUris.ToArray(typeof(string));
+        }
+
         /// <summary>
         /// TODO doc
         /// </summary>
@@ -105,6 +124,9 @@ namespace Dmicade
             return randomVideo;
         }
 
+        public void SetDescriptorFormatted(string desc) => descriptorFormatted = desc;
+        public void SetInfoFormatted(string info) => infoFormatted = info;
+        
         /// <summary>
         /// TODO doc
         /// </summary>

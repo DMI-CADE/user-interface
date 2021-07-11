@@ -9,7 +9,7 @@ using UnityEngine.UI;
 namespace Dmicade
 {
     enum ScrollState { Stop, Accel, Decel, Continue }
-    enum ScrollDir { None = 0, Forward = -1, Backwards = 1 }
+    public enum ScrollDir { None = 0, Forward = -1, Backwards = 1 }
     
     public class ContentDisplayManager : MonoBehaviour
     {
@@ -17,7 +17,7 @@ namespace Dmicade
         public Vector3 selectedElementPosition;
         [Min(0f)] public float elementSpacing = 7f;
         [Tooltip("Amount of generated display elements (excluding overlap). When 0 uses the amount of available apps."), 
-         Min(0)] public int initalElementsAmount = 0;
+         Min(0)] public int initialElementsAmount = 0;
         [Tooltip("Overlapping elements per side."),
          Range(1,5)] public int overlappingElements = 2;
 
@@ -30,11 +30,15 @@ namespace Dmicade
         public float inputBuffer;
         public LeanTweenType alphaBlendType;
         
-        [SerializeField] private ContentDataManager contentDataManager;
+        [Space(20)]
+        private ContentDataManager _contentDataManager; // Reference to singleton.
+
+        public event Action<ScrollDir> OnScrollStart;
+        public event Action<string> OnSelectionChange;
         
         private string[] _appOrder;
-        private Vector3 rearmostAnchor;
-        private Vector3 foremostAnchor;
+        private Vector3 _rearmostAnchor;
+        private Vector3 _foremostAnchor;
         private int _selectedElement = 0;
         private int _selectedData = 0;
         private ContentDisplayElement[] _displayElements;
@@ -46,17 +50,21 @@ namespace Dmicade
         // Start is called before the first frame update
         void Start()
         {
+            _contentDataManager = ContentDataManager.Instance;
+            
             // Use alphabetical order as default.
-            _appOrder = contentDataManager.AppNames;
+            _appOrder = _contentDataManager.AppNames;
             Array.Sort(_appOrder);
             Debug.Log("App Order: " + String.Join(", ", _appOrder));
             
             FillDisplayElements();
             InitialDisplayElementsSetup();
             
-            rearmostAnchor = selectedElementPosition - (elementSpacing * (overlappingElements + 1)) * scrollDirection;
-            foremostAnchor = selectedElementPosition +
+            _rearmostAnchor = selectedElementPosition - (elementSpacing * (overlappingElements + 1)) * scrollDirection;
+            _foremostAnchor = selectedElementPosition +
                              (elementSpacing * (_displayElements.Length - overlappingElements)) * scrollDirection;
+            
+            OnSelectionChange?.Invoke(_appOrder[_selectedData]);
         }
         
         // Update is called once per frame
@@ -104,8 +112,10 @@ namespace Dmicade
             // Advance selection.
             _selectedElement = Mod(_selectedElement + -1 * (int) scrollDir, _displayElements.Length);
             //Debug.Log("_selectedElement: " + _selectedElement);
-            _selectedData = Mod(_selectedData + -1 * (int) scrollDir, contentDataManager.AppAmount);
+            _selectedData = Mod(_selectedData + -1 * (int) scrollDir, _contentDataManager.AppAmount);
             //Debug.Log("_selectedData: " + _selectedData);
+            
+            OnSelectionChange?.Invoke(_appOrder[_selectedData]);
             
             UpdateEdgeElement(scrollDir);
 
@@ -113,6 +123,8 @@ namespace Dmicade
             _moveIncrementDistance = (float) scrollDir * elementSpacing / 2 * scrollDirection;
 
             MoveAllDisplayElements(_moveIncrementDistance, accelerationType, accelerationTime, UpdateMovement);
+            
+            OnScrollStart?.Invoke(scrollDir);
         }
 
         /// Meant to be invoked once after the action of current _moveState is done. TODO doc
@@ -169,7 +181,7 @@ namespace Dmicade
 
                 // Move element.
                 movedElement = Mod(movedElement - 1, _displayElements.Length);
-                _displayElements[movedElement].transform.position = foremostAnchor;
+                _displayElements[movedElement].transform.position = _foremostAnchor;
             } 
             else if (scrollDir == ScrollDir.Backwards)
             {
@@ -186,7 +198,7 @@ namespace Dmicade
                         
                 // Move element.
                 movedElement = Mod(movedElement, _displayElements.Length);
-                _displayElements[movedElement].transform.position = rearmostAnchor;
+                _displayElements[movedElement].transform.position = _rearmostAnchor;
             }
             
             ReadyDisplayElement(movedElement);
@@ -209,7 +221,7 @@ namespace Dmicade
         private void FillDisplayElements()
         {
             // On <2, default to amount of loaded apps (min. 2). 
-            int amount = initalElementsAmount > 1 ? initalElementsAmount : Math.Max(contentDataManager.AppAmount, 2);
+            int amount = initialElementsAmount > 1 ? initialElementsAmount : Math.Max(_contentDataManager.AppAmount, 2);
             
             // Add additional overlapping elements elements.
             _displayElements = new ContentDisplayElement[amount + 2 * overlappingElements];
@@ -249,7 +261,7 @@ namespace Dmicade
 
                 // Data
                 // Skip data setup when no data is present.
-                if (contentDataManager.AppAmount == 0) break;
+                if (_contentDataManager.AppAmount == 0) break;
                 
                 ReadyDisplayElement(i);
                 
@@ -286,7 +298,7 @@ namespace Dmicade
         {
             int dataIndex = GetDataIndex(elemIndex);
             string appId = _appOrder[dataIndex];
-            DmicAppData data = contentDataManager.GetApp(appId);
+            DmicAppData data = _contentDataManager.GetApp(appId);
             
             Image img = _displayElements[elemIndex].logoImage;
             img.sprite = data.logoSprite;
@@ -301,7 +313,7 @@ namespace Dmicade
         /// <para>
         /// Relies on <see cref="_selectedElement"/>, <see cref="_selectedData"/>, <see cref="overlappingElements"/> to
         /// be set correctly i.e. realistic in relation to the array lengths of <see cref="_displayElements"/> and
-        /// loaded app data in <see cref="contentDataManager"/>.
+        /// loaded app data in <see cref="_contentDataManager"/>.
         /// </para>
         /// <param name="elementIndex">the element index.</param>
         /// <returns>The according data index.</returns>
@@ -316,7 +328,7 @@ namespace Dmicade
             int result = distFromSelectedElem - _displayElements.Length * inBack;
 
             // Move along data array.
-            result = Mod(_selectedData + result, contentDataManager.AppAmount);
+            result = Mod(_selectedData + result, _contentDataManager.AppAmount);
 
             return result;
         }
