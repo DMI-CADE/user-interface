@@ -1,38 +1,41 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Dmicade;
 using UnityEngine;
 
-[RequireComponent(typeof(ContentDisplayManager))]
-public class InfoPanelController : MonoBehaviour
+namespace Dmicade
 {
-    public InfoPanel infoPanel;
 
-    private ContentDataManager _contentDataManager;
-    
-    private void Awake()
+    [RequireComponent(typeof(ContentDisplayManager))]
+    public class InfoPanelController : MonoBehaviour
     {
-        _contentDataManager = ContentDataManager.Instance;
+        public InfoPanel infoPanel;
 
-        ContentDisplayManager cdm = gameObject.GetComponent<ContentDisplayManager>();
-        
-        cdm.OnSelectionChange += SelectionChange;
-    }
+        private ContentDataManager _contentDataManager;
 
-    private void SelectionChange(string selection)
-    {
-        infoPanel.StopVideo();
-        
-        var app = ContentDataManager.Instance.GetApp(selection);
-        infoPanel.SetTitle(app.displayName);
-
-        if (app.videos.Length > 0)
+        private void Awake()
         {
-            infoPanel.SetVideoUri(app.GetRandomVideo());
-            infoPanel.PlayVideo();
+            _contentDataManager = ContentDataManager.Instance;
+
+            ContentDisplayManager cdm = gameObject.GetComponent<ContentDisplayManager>();
+
+            cdm.OnSelectionChange += SelectionChange;
         }
 
-        infoPanel.SetBaseInfo(app);
+        private void SelectionChange(string selection)
+        {
+            infoPanel.StopVideo();
+
+            var app = ContentDataManager.Instance.GetApp(selection);
+            infoPanel.SetTitle(app.displayName);
+
+            if (app.videos.Length > 0)
+            {
+                infoPanel.SetVideoUri(app.GetRandomVideo());
+                infoPanel.PlayVideo();
+            }
+
+            infoPanel.SetBaseInfo(app);
+        }
     }
 }

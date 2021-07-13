@@ -33,7 +33,9 @@ namespace Dmicade
         [Space(20)]
         private ContentDataManager _contentDataManager; // Reference to singleton.
 
-        public event Action<ScrollDir> OnScrollStart;
+        public event Action<Vector3> OnScrollStart;
+        public event Action<Vector3> OnScrollEnd;
+        public event Action<Vector3> OnScrollContinue;
         public event Action<string> OnSelectionChange;
         
         private string[] _appOrder;
@@ -44,6 +46,7 @@ namespace Dmicade
         private ContentDisplayElement[] _displayElements;
         private ScrollState _scrollState = ScrollState.Stop;
         private Vector3 _moveIncrementDistance = Vector3.zero;
+        private ScrollDir _currentScrollDir = ScrollDir.None;
         private float _inputTimeStamp = 0f;
         private ScrollDir _queuedScrollDir = ScrollDir.None;
 
@@ -108,6 +111,7 @@ namespace Dmicade
         /// TODO doc
         private void StartMovement(ScrollDir scrollDir)
         {
+            _currentScrollDir = scrollDir;
             
             // Advance selection.
             _selectedElement = Mod(_selectedElement + -1 * (int) scrollDir, _displayElements.Length);
@@ -124,7 +128,7 @@ namespace Dmicade
 
             MoveAllDisplayElements(_moveIncrementDistance, accelerationType, accelerationTime, UpdateMovement);
             
-            OnScrollStart?.Invoke(scrollDir);
+            OnScrollStart?.Invoke(_moveIncrementDistance);
         }
 
         /// Meant to be invoked once after the action of current _moveState is done. TODO doc
@@ -144,6 +148,8 @@ namespace Dmicade
                     _scrollState = ScrollState.Decel;
 
                     MoveAllDisplayElements(_moveIncrementDistance, decelerationType, decelerationTime, UpdateMovement);
+
+                    OnScrollEnd?.Invoke(_moveIncrementDistance);
                 }
             }
 
