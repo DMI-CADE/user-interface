@@ -3318,7 +3318,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 374c64bebf336b349abf0de14b31ae82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DmicAppsLocation: C:/Users/BenKr/Documents/DMI-CADE/vm_shared_folder/dmic-apps
+  DmicAppsLocation: 
 --- !u!4 &1903522291
 Transform:
   m_ObjectHideFlags: 0

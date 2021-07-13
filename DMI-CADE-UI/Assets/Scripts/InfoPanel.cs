@@ -22,7 +22,7 @@ public class InfoPanel : MonoBehaviour
     {
         if (altTitle == null)
         {
-            headerTextSingleLine.text = title;
+            headerTextSingleLine.text = title.ToUpper();
         }
     }
 
