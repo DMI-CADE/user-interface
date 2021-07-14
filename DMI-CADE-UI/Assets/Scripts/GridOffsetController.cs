@@ -17,10 +17,6 @@ namespace Dmicade
         private Material _staticTopGridMaterial; 
         private Material _staticBottomGridMaterial;
         private int _offsetShaderId;
-        private Vector4 _topGridOffset;
-        private Vector4 _bottomGridOffset;
-        private float _test = 0.0f;
-        
 
         private void Awake()
         {
@@ -28,11 +24,12 @@ namespace Dmicade
 
             _cdm.OnScrollStart += MoveAccelerate;
             _cdm.OnScrollEnd += MoveDecelerate;
+            _cdm.OnScrollContinueOnStart += MoveContinue;
+            _cdm.OnScrollContinueOnEnd += MoveContinue;
 
             _staticBottomGridMaterial = bottomGrid.GetComponent<Renderer>().material;
             _staticTopGridMaterial = topGrid.GetComponent<Renderer>().material;
             
-            //_staticBottomGridMaterial.EnableKeyword("_Offset");
             _offsetShaderId = Shader.PropertyToID("_Offset");
         }
 
@@ -41,6 +38,9 @@ namespace Dmicade
 
         private void MoveDecelerate(Vector3 distance) =>
             MoveGrids(distance, _cdm.decelerationTime, _cdm.decelerationType);
+
+        private void MoveContinue(Vector3 distance) => MoveGrids(distance,
+            _cdm.decelerationTime, LeanTweenType.linear);
 
         private void MoveGrids(Vector3 distance, float duration, LeanTweenType easeType) 
         {

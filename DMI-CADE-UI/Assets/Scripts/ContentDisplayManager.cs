@@ -35,7 +35,8 @@ namespace Dmicade
 
         public event Action<Vector3> OnScrollStart;
         public event Action<Vector3> OnScrollEnd;
-        public event Action<Vector3> OnScrollContinue;
+        public event Action<Vector3> OnScrollContinueOnEnd; 
+        public event Action<Vector3> OnScrollContinueOnStart; 
         public event Action<string> OnSelectionChange;
         
         private string[] _appOrder;
@@ -108,23 +109,28 @@ namespace Dmicade
             }
         }
 
-        /// TODO doc
-        private void StartMovement(ScrollDir scrollDir)
+        private void AdvanceSelection(ScrollDir scrollDir)
         {
-            _currentScrollDir = scrollDir;
-            
-            // Advance selection.
             _selectedElement = Mod(_selectedElement + -1 * (int) scrollDir, _displayElements.Length);
             //Debug.Log("_selectedElement: " + _selectedElement);
             _selectedData = Mod(_selectedData + -1 * (int) scrollDir, _contentDataManager.AppAmount);
             //Debug.Log("_selectedData: " + _selectedData);
             
             OnSelectionChange?.Invoke(_appOrder[_selectedData]);
+        }
+
+        /// TODO doc
+        private void StartMovement(ScrollDir scrollDir)
+        {
             
+            _currentScrollDir = scrollDir;
+            
+            AdvanceSelection(scrollDir);
+
             UpdateEdgeElement(scrollDir);
 
             _scrollState = ScrollState.Accel;
-            _moveIncrementDistance = (float) scrollDir * elementSpacing / 2 * scrollDirection;
+            _moveIncrementDistance = (int) scrollDir * elementSpacing / 2 * scrollDirection;
 
             MoveAllDisplayElements(_moveIncrementDistance, accelerationType, accelerationTime, UpdateMovement);
             
@@ -134,12 +140,18 @@ namespace Dmicade
         /// Meant to be invoked once after the action of current _moveState is done. TODO doc
         private void UpdateMovement()
         {
+            // Acceleration done.
             if (_scrollState == ScrollState.Accel)
             {
                 // Continue
-                if (false && InputHandler.GetButton(DmicButton.P1Up))
+                if (CheckKeepScrolling())
                 {
-                    MoveAllDisplayElements(_moveIncrementDistance, decelerationType, decelerationTime, UpdateMovement); 
+                    _scrollState = ScrollState.Continue;
+
+                    MoveAllDisplayElements(_moveIncrementDistance, LeanTweenType.linear, decelerationTime,
+                        UpdateMovement);
+                    
+                    OnScrollContinueOnEnd?.Invoke(_moveIncrementDistance);
                 }
                 
                 // Default: decelerate
@@ -152,12 +164,34 @@ namespace Dmicade
                     OnScrollEnd?.Invoke(_moveIncrementDistance);
                 }
             }
+            
+            // Continue scrolling done.
+            else if (_scrollState == ScrollState.Continue)
+            {
+                if (CheckKeepScrolling())
+                {
+                    _scrollState = ScrollState.Accel;
+                                    
+                    AdvanceSelection(_currentScrollDir);
+                    
+                    UpdateEdgeElement(_currentScrollDir);
+                    
+                    MoveAllDisplayElements(_moveIncrementDistance, LeanTweenType.linear, decelerationTime,
+                        UpdateMovement);
+                        
+                    OnScrollContinueOnStart?.Invoke(_moveIncrementDistance);
+                }
 
+                else
+                    _scrollState = ScrollState.Stop;
+                
+            }
+
+            // Deceleration done.
             else if (_scrollState == ScrollState.Decel)
             {
-                
                 // Input buffered
-                if (_inputTimeStamp + inputBuffer >= Time.time || InputHandler.GetButton(DmicButton.P1Up) || InputHandler.GetButton(DmicButton.P1Down))
+                if (_inputTimeStamp + inputBuffer >= Time.time)
                 {
                     StartMovement(_queuedScrollDir);
                 } 
@@ -167,6 +201,12 @@ namespace Dmicade
                     _scrollState = ScrollState.Stop;
                 
             }
+        }
+
+        private bool CheckKeepScrolling()
+        {
+            return InputHandler.GetButton(DmicButton.P1Up) && _currentScrollDir == ScrollDir.Forward ||
+                   InputHandler.GetButton(DmicButton.P1Down) && _currentScrollDir == ScrollDir.Backwards;
         }
 
         /// Updates after advancing selected-values. TODO doc

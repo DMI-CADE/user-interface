@@ -2388,7 +2388,7 @@ MonoBehaviour:
   elementSpacing: 7
   initialElementsAmount: 6
   overlappingElements: 2
-  scrollDirection: {x: 0, y: 0, z: 1}
+  scrollDirection: {x: 0.01, y: 0, z: 1}
   accelerationTime: 0.25
   accelerationType: 3
   decelerationTime: 0.15
