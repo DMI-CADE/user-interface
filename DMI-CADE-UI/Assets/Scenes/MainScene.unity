@@ -289,7 +289,7 @@ Transform:
   - {fileID: 1920273168}
   - {fileID: 1405023875}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 23, z: 0}
 --- !u!114 &69675835
 MonoBehaviour:
@@ -1554,7 +1554,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1034107175
 MonoBehaviour:
@@ -2388,7 +2388,7 @@ MonoBehaviour:
   elementSpacing: 7
   initialElementsAmount: 6
   overlappingElements: 2
-  scrollDirection: {x: 0.01, y: 0, z: 1}
+  scrollDirection: {x: 0, y: 0, z: 1}
   accelerationTime: 0.25
   accelerationType: 3
   decelerationTime: 0.15
@@ -2408,7 +2408,7 @@ Transform:
   m_Children:
   - {fileID: 2077837922}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1414633647
 MonoBehaviour:
@@ -2423,6 +2423,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   infoPanel: {fileID: 69675835}
+  dragBuildupTime: 0.5
+  dragReliefTime: 0.3
+  dragBuildupEaseType: 2
+  dragReliefEaseType: 27
+  dragStrength: 0.2
+  rotateAmount: 3
 --- !u!114 &1414633650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3318,7 +3324,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 374c64bebf336b349abf0de14b31ae82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DmicAppsLocation: 
+  DmicAppsLocation: C:/Users/BenKr/Documents/DMI-CADE/vm_shared_folder/dmic-apps
 --- !u!4 &1903522291
 Transform:
   m_ObjectHideFlags: 0

@@ -35,8 +35,9 @@ namespace Dmicade
 
         public event Action<Vector3> OnScrollStart;
         public event Action<Vector3> OnScrollEnd;
-        public event Action<Vector3> OnScrollContinueOnEnd; 
-        public event Action<Vector3> OnScrollContinueOnStart; 
+        public event Action<Vector3> OnScrollContinueOnEnd;
+        public event Action OnScrollContinueStop;
+        public event Action<Vector3> OnScrollContinueOnStart;
         public event Action<string> OnSelectionChange;
         
         private string[] _appOrder;
@@ -183,7 +184,19 @@ namespace Dmicade
                 }
 
                 else
-                    _scrollState = ScrollState.Stop;
+                {
+                    // Input buffered
+                    if (_inputTimeStamp + inputBuffer >= Time.time)
+                    {
+                        StartMovement(_queuedScrollDir);
+                    }
+                    else
+                    {
+                        OnScrollContinueStop?.Invoke();
+                        _scrollState = ScrollState.Stop;
+                    }
+                    
+                }
                 
             }
 
