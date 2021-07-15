@@ -27,13 +27,11 @@ namespace Dmicade
         private void Awake()
         {
             _contentDataManager = ContentDataManager.Instance;
-            Debug.Log(_contentDataManager);
 
             _cdm = gameObject.GetComponent<ContentDisplayManager>();
 
             _infoPanelBasePos = infoPanel.transform.position;
             _infoPanelBaseYRot = infoPanel.transform.rotation.eulerAngles.y;
-            Debug.Log(_infoPanelBaseYRot);
 
             _cdm.OnSelectionChange += SelectionChange;
             _cdm.OnScrollStart += EngageDrag;

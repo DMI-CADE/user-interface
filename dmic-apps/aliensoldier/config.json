@@ -1,0 +1,10 @@
+{
+    "media": {
+        "logo": "",
+        "screenshots": [""],
+        "trailer": [""],
+        "gameplay_demo": [""]
+    },
+    "type": "mame_rom",
+    "command": "mame genesis -cartridge %%path%%/alien-soldier/aliensol.zip"
+}

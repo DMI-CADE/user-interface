@@ -10,7 +10,7 @@ namespace Dmicade
     {
         public static ContentDataManager Instance { get; private set; }
         
-        public string DmicAppsLocation;
+        public string DmicAppsProjectRelativePath;
         
         private Dictionary<string, DmicAppData> AppData = new Dictionary<string, DmicAppData>();
 
@@ -28,8 +28,28 @@ namespace Dmicade
         private void Awake()
         {
             Instance = this;
-                
-            LoadAppData(DmicAppsLocation);
+
+            //Debug.Log($"datapath: {Application.dataPath}");
+            //Debug.Log($"DmicAppsProjectRelativePath '{DmicAppsProjectRelativePath}'");
+            // Get path to repo.
+            string dmicAppsLocation = Application.dataPath.Replace(@"DMI-CADE-UI/Assets", "");
+            if (DmicAppsProjectRelativePath.Length > 0)
+            {
+                string customPath = Path.Combine(dmicAppsLocation, DmicAppsProjectRelativePath);
+                bool customPathIsValid = Directory.Exists(customPath);
+                dmicAppsLocation = customPathIsValid ? customPath : Path.Combine(dmicAppsLocation, @"dmic-apps");
+                if (customPathIsValid) 
+                    Debug.LogWarning($"Using custom DMIC-Apps location: {customPath}");
+                else
+                    Debug.LogWarning($"Custom DMIC-Apps location not found: {customPath}");
+            }
+            else
+            {
+                dmicAppsLocation = Path.Combine(dmicAppsLocation, @"dmic-apps");
+            }
+
+            Debug.Log($"Path: {dmicAppsLocation}");
+            LoadAppData(dmicAppsLocation);
         }
 
         /// <summary>

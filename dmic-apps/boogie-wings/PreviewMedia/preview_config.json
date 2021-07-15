@@ -1,0 +1,16 @@
+{
+	"displayName": "Boogie Wings",
+	"altDisplayName": "",
+	"gameFormats": ["1p", "2p", "coop"],
+	
+    "logo": "boogiewings_banner.png",
+    "images": [""],
+    "videos": [""],
+    
+	"genre": 		"Shooter",
+	"developer":	"Data East",
+	"publisher": 	"Data East",
+	"release": 		"1992",
+	
+	"moreInfoText": ""
+}

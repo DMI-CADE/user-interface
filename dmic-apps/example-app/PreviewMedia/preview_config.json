@@ -1,0 +1,16 @@
+{
+	"displayName": "Example App",
+	"altDisplayName": "Alt Name",
+	"gameFormats": ["vs", "coop", "1p"],
+	
+    "logo": "logo.png",
+    "images": ["screenshot_1.png"],
+    "videos": ["trailer.mp4"],
+    
+	"genre": 		"<GENRE>",
+	"developer":	"<NAME AAAAAAAA>, <NAME BBBBBBBB>, <NAME CCCCCCCC>, <NAME DDDDDDDD>",
+	"-publisher": 	"<PUBLISHER>",
+	"release": 		"12.34.5678",
+	
+	"moreInfoText": "<MORE_INFO>"
+}

@@ -1,0 +1,16 @@
+{
+	"displayName": "Arcus Odyssey",
+	"altDisplayName": "",
+	"gameFormats": ["1p", "2p", "coop"],
+	
+    "logo": "arcusodyssey_banner.png",
+    "images": [""],
+    "videos": [""],
+    
+	"genre": 		"Action",
+	"developer":	"Wolf Team",
+	"publisher": 	"Renovation Products, Inc.",
+	"release": 		"14.06.1991",
+	
+	"moreInfoText": ""
+}

@@ -1,0 +1,16 @@
+{
+	"displayName": "Elevator Action Returns",
+	"altDisplayName": "",
+	"gameFormats": ["1p", "2p", "coop"],
+	
+    "logo": "elevatoractionreturnes_banner.png",
+    "images": [""],
+    "videos": [""],
+    
+	"genre": 		"Action",
+	"developer":	"Taito",
+	"publisher": 	"Taito",
+	"release": 		"1993",
+	
+	"moreInfoText": ""
+}

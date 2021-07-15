@@ -1,0 +1,15 @@
+{
+	"displayName": "Alien Soldier",
+	"gameFormats": ["1p"],
+	
+    "logo": "aliensoldier_banner.png",
+    "images": [],
+    "videos": [],
+    
+	"genre": 		"Action, Shooter",
+	"developer":	"Treasure",
+	"publisher": 	"Sega Enterprises Ltd.",
+	"release": 		"24.02.1995",
+	
+	"moreInfoText": ""
+}
