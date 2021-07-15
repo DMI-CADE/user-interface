@@ -14,7 +14,7 @@ namespace Dmicade
     public class ContentDisplayManager : MonoBehaviour
     {
         [Header("Setup")]
-        public Vector3 selectedElementPosition;
+        public GameObject selectedElementAnchor;
         [Min(0f)] public float elementSpacing = 7f;
         [Tooltip("Amount of generated display elements (excluding overlap). When 0 uses the amount of available apps."), 
          Min(0)] public int initialElementsAmount = 0;
@@ -41,6 +41,7 @@ namespace Dmicade
         public event Action<string> OnSelectionChange;
         
         private string[] _appOrder;
+        private Vector3 _selectedElementPosition;
         private Vector3 _rearmostAnchor;
         private Vector3 _foremostAnchor;
         private int _selectedElement = 0;
@@ -57,6 +58,9 @@ namespace Dmicade
         {
             _contentDataManager = ContentDataManager.Instance;
             
+            _selectedElementPosition = selectedElementAnchor.transform.position;
+            selectedElementAnchor.SetActive(false);
+            
             // Use alphabetical order as default.
             _appOrder = _contentDataManager.AppNames;
             Array.Sort(_appOrder);
@@ -65,8 +69,8 @@ namespace Dmicade
             FillDisplayElements();
             InitialDisplayElementsSetup();
             
-            _rearmostAnchor = selectedElementPosition - (elementSpacing * (overlappingElements + 1)) * scrollDirection;
-            _foremostAnchor = selectedElementPosition +
+            _rearmostAnchor = _selectedElementPosition - (elementSpacing * (overlappingElements + 1)) * scrollDirection;
+            _foremostAnchor = _selectedElementPosition +
                              (elementSpacing * (_displayElements.Length - overlappingElements)) * scrollDirection;
             
             OnSelectionChange?.Invoke(_appOrder[_selectedData]);
@@ -315,7 +319,7 @@ namespace Dmicade
                 if (i >= (visibleElements + overlappingElements))
                     distance = elementSpacing * (i - _displayElements.Length);
                 
-                _displayElements[i].transform.position = selectedElementPosition + (scrollDirection * distance);
+                _displayElements[i].transform.position = _selectedElementPosition + (scrollDirection * distance);
                 // TODO rotation
 
                 // Data
