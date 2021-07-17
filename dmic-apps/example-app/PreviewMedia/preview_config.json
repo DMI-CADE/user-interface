@@ -1,7 +1,7 @@
 {
 	"displayName": "Example App",
 	"altDisplayName": "Alt Name",
-	"gameFormats": ["vs", "coop", "1p"],
+	"gameFormats": ["vs", "1p", "coop"],
 	
     "logo": "logo.png",
     "images": ["screenshot_1.png"],

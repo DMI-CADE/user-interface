@@ -1,11 +1,15 @@
 using System;
+using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Dmicade
 {
+    public enum GameMode { None, SingleP, Coop, SingleAndCoop, Vs, VsCpu }
+    
     [Serializable]
     public class DmicAppData
     {
@@ -14,7 +18,8 @@ namespace Dmicade
         public string displayName;
         public string altDisplayName;
         public string[] gameFormats;
-        
+        public GameMode[] parsedGameModes;
+
         // Media
         public string logo;
         public string[] images;
@@ -54,6 +59,7 @@ namespace Dmicade
             newAppData.Name = name;
             
             newAppData.SetVideoPaths(dmicAppsLocation);
+            newAppData.SetGameModes();
             
             return newAppData;
         }
@@ -126,6 +132,40 @@ namespace Dmicade
 
         public void SetDescriptorFormatted(string desc) => descriptorFormatted = desc;
         public void SetInfoFormatted(string info) => infoFormatted = info;
+
+        public void SetGameModes()
+        {
+            List<GameMode> modes = new List<GameMode>(1);
+            
+            foreach (var modeStr in gameFormats)
+            {
+                switch (modeStr)
+                {
+                    case "1p":
+                        if(gameFormats.Contains("coop"))
+                            modes.Add(GameMode.SingleAndCoop);
+                        else
+                            modes.Add(GameMode.SingleP);
+                        break;
+                    case "coop":
+                        if(!gameFormats.Contains("1p"))
+                            modes.Add(GameMode.Coop);
+                        break;
+                    case "vs":
+                        modes.Add(GameMode.Vs);
+                        break;
+                    case "vs_cpu":
+                        modes.Add(GameMode.VsCpu);
+                        break;
+                    
+                    default:
+                        Debug.LogWarning($"Could not recognize game mode: {modeStr}");
+                        break;
+                }
+            }
+
+            parsedGameModes = modes.ToArray();
+        }
         
         /// <summary>
         /// TODO doc

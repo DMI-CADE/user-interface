@@ -15,6 +15,7 @@ namespace Dmicade
         public RawImage videoDisplay;
         public TextMeshProUGUI textInfoDescriptor;
         public TextMeshProUGUI textInfoData;
+        public ModeInfo modeInfo; 
         
         public int availableDataCharacters = 17;
 
@@ -37,7 +38,9 @@ namespace Dmicade
 
         public void StopVideo() => previewVideoPlayer.Stop();
 
-        public void SetGameFormat() {}
+        public void SetGameModes(GameMode[] modeConfig) => modeInfo.UpdateModeInfo(modeConfig);
+        
+        public void ShowNextGameMode() => modeInfo.ShowNextMode();
 
         ///<summary>Updates the info displayed in the bottom panel.</summary> TODO doc
         public void SetBaseInfo(DmicAppData app)

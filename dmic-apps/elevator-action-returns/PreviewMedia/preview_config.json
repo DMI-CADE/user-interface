@@ -1,7 +1,7 @@
 {
 	"displayName": "Elevator Action Returns",
 	"altDisplayName": "",
-	"gameFormats": ["1p", "2p", "coop"],
+	"gameFormats": ["coop", "1p"],
 	
     "logo": "elevatoractionreturnes_banner.png",
     "images": [""],
