@@ -365,7 +365,7 @@ Transform:
   - {fileID: 1405023875}
   - {fileID: 1893053107}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 23, z: 0}
 --- !u!114 &69675835
 MonoBehaviour:
@@ -1875,7 +1875,7 @@ Transform:
   - {fileID: 197214774}
   - {fileID: 1360606656}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &592525795
 GameObject:
@@ -1979,14 +1979,15 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "ABCDEFGHIJKLMNOPQRSTUVWABCDEFGHIJKLMNOPQRSTUVW\n\nAlien Soldier is a side-scrolling
-    action game in which the player takes the role of Epsilon-Eagle, the former leader
-    of the Scarlet mutant group. The mutants are now lead by the evil Xi-Tiger who
-    had turned them to terrorism, and one of their goals is to kill Epsilon-Eagle...
-    \n\nAt the start of the game the player chooses four out of six weapons - each
-    with special advantages or disadvantages against certain enemies. As mutant Epsilon-Eagle
-    also has other special powers, e.g. teleporting across the screen or (with full
-    health) morphing into a powerful phoenix destroying everything in his way.\n\n"
+  m_text: "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ\n\nAlien Soldier
+    is a side-scrolling action game in which the player takes the role of Epsilon-Eagle,
+    the former leader of the Scarlet mutant group. The mutants are now lead by the
+    evil Xi-Tiger who had turned them to terrorism, and one of their goals is to
+    kill Epsilon-Eagle... \n\nAt the start of the game the player chooses four out
+    of six weapons - each with special advantages or disadvantages against certain
+    enemies. As mutant Epsilon-Eagle also has other special powers, e.g. teleporting
+    across the screen or (with full health) morphing into a powerful phoenix destroying
+    everything in his way.\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d5b543ddad8efc9448972f6219a0d135, type: 2}
   m_sharedMaterial: {fileID: -8359445593742148317, guid: d5b543ddad8efc9448972f6219a0d135, type: 2}
@@ -2690,7 +2691,7 @@ RectTransform:
   - {fileID: 1716341560}
   - {fileID: 1222434527}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2799,11 +2800,11 @@ VideoPlayer:
   - {fileID: 0}
   m_DirectAudioVolumes:
   - 0
-  m_Url: D:\Ordner\RANDOMDATEIN\Wildcactus_endversion.mp4
+  m_Url: 
   m_EnabledAudioTracks: 01
   m_DirectAudioMutes: 00
   m_ControlledAudioTrackCount: 1
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_SkipOnDrop: 1
   m_Looping: 1
   m_WaitForFirstFrame: 1
@@ -3104,7 +3105,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1034107175
 MonoBehaviour:
@@ -3514,7 +3515,7 @@ RectTransform:
   - {fileID: 1259415371}
   - {fileID: 1105638889}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -4614,13 +4615,30 @@ GameObject:
   - component: {fileID: 1379749269}
   - component: {fileID: 1379749268}
   - component: {fileID: 1379749267}
+  - component: {fileID: 1379749266}
   m_Layer: 5
   m_Name: MoreInfoOverlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
+--- !u!114 &1379749266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1379749265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af05c8d5cf1fb8e468ee4b110e0500e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backdrop: {fileID: 534587784}
+  textContainer: {fileID: 1157034085}
+  infoText: {fileID: 620291044}
+  interactionIndicator: {fileID: 1577347399}
 --- !u!114 &1379749267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4651,7 +4669,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1379749265}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}
@@ -4680,7 +4698,7 @@ RectTransform:
   - {fileID: 1623709433}
   - {fileID: 782215379}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -4900,7 +4918,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1414633647
 MonoBehaviour:
@@ -5488,7 +5506,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spritesPixelPerUnit: 4
   pixelPerIncrement: 10
-  tweenTime: 0.2
+  tweenTime: 0
   useTimePerIncrement: 0
   timePerIncrement: 0
   containedElements:
@@ -5699,7 +5717,7 @@ Transform:
   m_LocalScale: {x: 16, y: 16, z: 16}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
 --- !u!1 &1681965900
 GameObject:
@@ -5954,6 +5972,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1690724955}
   m_CullTransparentMesh: 1
+--- !u!1 &1696149159
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1696149160}
+  - component: {fileID: 1696149161}
+  m_Layer: 0
+  m_Name: SceneManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1696149160
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1696149159}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1696149161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1696149159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59e15c12dcce99c40800e2a1e93f5bc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  displayManager: {fileID: 1414633645}
+  infoOverlay: {fileID: 1379749266}
 --- !u!1 &1706066964
 GameObject:
   m_ObjectHideFlags: 0
@@ -6575,7 +6638,7 @@ Transform:
   m_LocalScale: {x: 16, y: 16, z: 16}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1812573053
 GameObject:
@@ -7246,7 +7309,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 374c64bebf336b349abf0de14b31ae82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DmicAppsProjectRelativePath: ../vm_shared_folder/dmic-apps
+  DmicAppsProjectRelativePath: ../vm_shared_folder/dmic-apps_
 --- !u!4 &1903522291
 Transform:
   m_ObjectHideFlags: 0
@@ -7260,7 +7323,7 @@ Transform:
   m_Children:
   - {fileID: 836242101}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1906387003 stripped
 Transform:
@@ -8168,7 +8231,7 @@ Transform:
   - {fileID: 1906387003}
   - {fileID: 559618759}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2080323319
 GameObject:

@@ -33,6 +33,8 @@ namespace Dmicade
         [Space(20)]
         private ContentDataManager _contentDataManager; // Reference to singleton.
 
+        public event Action OnScrollEnable;
+        public event Action OnScrollDisable;
         public event Action<Vector3> OnScrollStart;
         public event Action<Vector3> OnScrollEnd;
         public event Action<Vector3> OnScrollContinueOnEnd;
@@ -52,12 +54,11 @@ namespace Dmicade
         private ScrollDir _currentScrollDir = ScrollDir.None;
         private float _inputTimeStamp = 0f;
         private ScrollDir _queuedScrollDir = ScrollDir.None;
+        private bool _scrollActive = false;
 
-        // Start is called before the first frame update
-        void Start()
+        private void Awake()
         {
             _contentDataManager = ContentDataManager.Instance;
-            
             _selectedElementPosition = selectedElementAnchor.transform.position;
             selectedElementAnchor.SetActive(false);
             
@@ -71,14 +72,20 @@ namespace Dmicade
             
             _rearmostAnchor = _selectedElementPosition - (elementSpacing * (overlappingElements + 1)) * scrollDirection;
             _foremostAnchor = _selectedElementPosition +
-                             (elementSpacing * (_displayElements.Length - overlappingElements)) * scrollDirection;
-            
+                              (elementSpacing * (_displayElements.Length - overlappingElements)) * scrollDirection;
+        }
+
+        // Start is called before the first frame update
+        void Start()
+        {
             OnSelectionChange?.Invoke(_appOrder[_selectedData]);
         }
         
         // Update is called once per frame
         void Update()
         {
+            if (!_scrollActive) return;
+            
             if (InputHandler.GetButtonDown(DmicButton.P1Up))
             {
                 _inputTimeStamp = Time.time;
@@ -99,8 +106,37 @@ namespace Dmicade
                     StartMovement(ScrollDir.Backwards);
                 }
             }
+            else if (InputHandler.GetButtonDown(DmicButton.P1Start) || InputHandler.GetButtonDown(DmicButton.P2Start))
+            {
+                // Start Game
+            }
+            else if (_scrollState == ScrollState.Stop && InputHandler.GetButtonDown(DmicButton.P1F))
+            {
+                if (SelectionHasAdditionalInfo())
+                {
+                    DisableScroll();
+                    SceneManager.Instance.ChangeState(SceneState.InfoOverlay, _appOrder[_selectedData]);
+                }
+            }
         }
 
+        public void EnableScroll()
+        {
+            OnScrollEnable?.Invoke();
+            _scrollActive = true;
+        }
+
+        public void DisableScroll()
+        {
+            OnScrollDisable?.Invoke();
+            _scrollActive = false;
+        }
+
+        public bool SelectionHasAdditionalInfo()
+        {
+            return _contentDataManager.GetApp(_appOrder[_selectedData]).moreInfoText.Length > 0;
+        }
+        
         /// TODO doc
         private void MoveAllDisplayElements(Vector3 moveIncrementDistance, LeanTweenType easeType, float time,
             Action callback=null)
@@ -127,7 +163,6 @@ namespace Dmicade
         /// TODO doc
         private void StartMovement(ScrollDir scrollDir)
         {
-            
             _currentScrollDir = scrollDir;
             
             AdvanceSelection(scrollDir);

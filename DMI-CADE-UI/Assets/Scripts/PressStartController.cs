@@ -20,9 +20,12 @@ namespace Dmicade
             _cdm = GetComponent<ContentDisplayManager>();
             _cdmTimer = GetComponent<CdmSyncTimer>();
 
+            _cdm.OnScrollEnable += StartToggle;
+            _cdm.OnScrollDisable += StopToggle;
             _cdm.OnScrollStart += StopToggle;
             _cdm.OnScrollEnd += StartToggle;
             _cdm.OnScrollContinueStop += StartToggle;
+            
             _cdmTimer.OnTick += ToggleTick;
         }
 
@@ -40,6 +43,8 @@ namespace Dmicade
             _toggleIsActive = false;
             pressStartTexts.DisableTexts();
         }
+        
+        private void StopToggle() => StopToggle(Vector3.zero);
 
         private void ToggleTick()
         {
