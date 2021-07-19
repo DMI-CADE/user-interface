@@ -40,6 +40,17 @@ namespace Dmicade
             _cdm.OnScrollEnd += DisengageDrag;
             _cdm.OnScrollContinueStop += DisengageDrag;
 
+            _cdm.OnScrollStart += HideMoreInfoIndicator;
+            _cdm.OnScrollEnd += ShowMoreInfoIndicator;
+            _cdm.OnScrollContinueStop += ShowMoreInfoIndicator;
+            _cdm.OnScrollEnable += ShowMoreInfoIndicator;
+            _cdm.OnScrollDisable += HideMoreInfoIndicator;
+
+            _cdm.OnScrollStart += DeactivateGameModes;
+            _cdm.OnScrollEnd += SetGameModes;
+            _cdm.OnScrollContinueStop += SetGameModes;
+            _cdm.OnScrollEnable += SetGameModes;
+            
             _syncTimer.OnTick += infoPanel.ShowNextGameMode;
         }
 
@@ -57,8 +68,6 @@ namespace Dmicade
             }
 
             infoPanel.SetBaseInfo(app);
-            
-            infoPanel.SetGameModes(app.parsedGameModes);
         }
 
         private void EngageDrag(Vector3 distance)
@@ -79,6 +88,24 @@ namespace Dmicade
         }
         
         private void DisengageDrag() => DisengageDrag(Vector3.zero);
+
+        private void ShowMoreInfoIndicator(Vector3 d)
+        {
+            if (_contentDataManager.GetApp(_cdm.GetSelectedApp()).moreInfoText.Length > 0)
+                infoPanel.ShowMoreInfoIndicator();
+        }
         
+        private void ShowMoreInfoIndicator() => ShowMoreInfoIndicator(Vector3.zero);
+
+        private void HideMoreInfoIndicator(Vector3 d) => infoPanel.HideMoreInfoIndicator();
+
+        private void HideMoreInfoIndicator() => HideMoreInfoIndicator(Vector3.zero);
+
+        public void SetGameModes() =>
+            infoPanel.SetGameModes(_contentDataManager.GetApp(_cdm.GetSelectedApp()).parsedGameModes);
+
+        public void SetGameModes(Vector3 d) => SetGameModes();
+
+        public void DeactivateGameModes(Vector3 d) => infoPanel.DeactivateGameModes();
     }
 }

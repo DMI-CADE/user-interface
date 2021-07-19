@@ -14,7 +14,7 @@ namespace Dmicade
         public bool useTimePerIncrement = false;
         public float timePerIncrement;
         public GameObject[] containedElements;
-
+        public bool IsOpen { get; private set; }
         public event Action OnOpened;
         public event Action OnClosed;
         
@@ -38,10 +38,14 @@ namespace Dmicade
             
             float incrementsToTween = (Math.Max(_maxSize.x, _maxSize.y) - _smallestSize) / _incrementSize;
             tweenTime = useTimePerIncrement ? incrementsToTween * timePerIncrement : tweenTime;
+            
+            //SetClosed();
         }
 
-        public void Open()
+        public void Open(bool checkClosed=false)
         {
+            //if (checkClosed && IsOpen) return;
+            
             LeanTween.cancel(gameObject);
             
             _image.enabled = true;
@@ -58,8 +62,10 @@ namespace Dmicade
                 openAmount.y - openAmount.y % _incrementSize);
         }
 
-        public void Close()
+        public void Close(bool checkOpen=false)
         {
+            //if (checkOpen && !IsOpen) return;
+            
             LeanTween.cancel(gameObject);
             
             StartClose();
@@ -83,7 +89,8 @@ namespace Dmicade
 
             _rectTransform.sizeDelta = _maxSize;
             _image.enabled = true;
-            
+
+            IsOpen = true;
             OnOpened?.Invoke();
         }
         
@@ -103,6 +110,8 @@ namespace Dmicade
         {
             _image.enabled = false;
             _rectTransform.sizeDelta = _smallestSize * Vector2.one;
+
+            IsOpen = false;
             OnClosed?.Invoke();
         }
     }

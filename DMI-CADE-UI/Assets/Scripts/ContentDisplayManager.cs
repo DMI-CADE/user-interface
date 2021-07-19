@@ -120,6 +120,8 @@ namespace Dmicade
             }
         }
 
+        public string GetSelectedApp() => _appOrder[_selectedData];
+
         public void EnableScroll()
         {
             OnScrollEnable?.Invoke();
@@ -134,7 +136,7 @@ namespace Dmicade
 
         public bool SelectionHasAdditionalInfo()
         {
-            return _contentDataManager.GetApp(_appOrder[_selectedData]).moreInfoText.Length > 0;
+            return _contentDataManager.GetApp(GetSelectedApp()).moreInfoText.Length > 0;
         }
         
         /// TODO doc

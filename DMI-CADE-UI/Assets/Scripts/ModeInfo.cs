@@ -9,10 +9,10 @@ namespace Dmicade
 {
     public class ModeInfo : MonoBehaviour
     {
-        public GameObject singlePlayerMode;
-        public GameObject coopMode;
-        public GameObject singleAndCoopMode;
-        public GameObject vsMode;
+        public BorderedContainer singlePlayerMode;
+        public BorderedContainer coopMode;
+        public BorderedContainer singleAndCoopMode;
+        public BorderedContainer vsMode;
 
         private GameMode[] _availableModes;
         private bool _cycleModes;
@@ -48,23 +48,23 @@ namespace Dmicade
             
             switch (mode)
             {
-                case GameMode.SingleP: singlePlayerMode.SetActive(true);
+                case GameMode.SingleP: singlePlayerMode.Open(true);
                     break;
-                case GameMode.Coop: coopMode.SetActive(true);
+                case GameMode.Coop: coopMode.Open(true);
                     break;
-                case GameMode.SingleAndCoop: singleAndCoopMode.SetActive(true);
+                case GameMode.SingleAndCoop: singleAndCoopMode.Open(true);
                     break;
-                case GameMode.Vs: vsMode.SetActive(true);
+                case GameMode.Vs: vsMode.Open(true);
                     break;
             }
         }
 
-        private void DeactivateAllModes()
+        public void DeactivateAllModes()
         {
-            singlePlayerMode.SetActive(false);
-            coopMode.SetActive(false);
-            singleAndCoopMode.SetActive(false);
-            vsMode.SetActive(false);
+            singlePlayerMode.Close(true);
+            coopMode.Close(true);
+            singleAndCoopMode.Close(true);
+            vsMode.Close(true);
         }
     }
 }
