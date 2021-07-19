@@ -32,20 +32,28 @@ namespace Dmicade
             //Debug.Log($"datapath: {Application.dataPath}");
             //Debug.Log($"DmicAppsProjectRelativePath '{DmicAppsProjectRelativePath}'");
             // Get path to repo.
+            bool useCustomPath = true;
             string dmicAppsLocation = Application.dataPath.Replace(@"DMI-CADE-UI/Assets", "");
             if (DmicAppsProjectRelativePath.Length > 0)
             {
                 string customPath = Path.Combine(dmicAppsLocation, DmicAppsProjectRelativePath);
-                bool customPathIsValid = Directory.Exists(customPath);
-                dmicAppsLocation = customPathIsValid ? customPath : Path.Combine(dmicAppsLocation, @"dmic-apps");
-                if (customPathIsValid) 
+                useCustomPath = Directory.Exists(customPath);
+                
+                if (useCustomPath)
+                {
                     Debug.LogWarning($"Using custom DMIC-Apps location: {customPath}");
+                    dmicAppsLocation = customPath;
+                }
                 else
+                {
                     Debug.LogWarning($"Custom DMIC-Apps location not found: {customPath}");
+                }
             }
-            else
+            
+            // default path
+            if(!useCustomPath)
             {
-                dmicAppsLocation = Path.Combine(dmicAppsLocation, @"dmic-apps");
+                dmicAppsLocation = Path.Combine(Application.dataPath, @"../../dmic-apps");
             }
 
             Debug.Log($"Path: {dmicAppsLocation}");
