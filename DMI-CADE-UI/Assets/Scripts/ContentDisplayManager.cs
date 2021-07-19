@@ -189,20 +189,17 @@ namespace Dmicade
                 if (CheckKeepScrolling())
                 {
                     _scrollState = ScrollState.Continue;
-
                     MoveAllDisplayElements(_moveIncrementDistance, LeanTweenType.linear, decelerationTime,
                         UpdateMovement);
                     
                     OnScrollContinueOnEnd?.Invoke(_moveIncrementDistance);
                 }
-                
                 // Default: decelerate
                 else
                 {
                     _scrollState = ScrollState.Decel;
-
                     MoveAllDisplayElements(_moveIncrementDistance, decelerationType, decelerationTime, UpdateMovement);
-
+                    
                     OnScrollEnd?.Invoke(_moveIncrementDistance);
                 }
             }
@@ -213,17 +210,13 @@ namespace Dmicade
                 if (CheckKeepScrolling())
                 {
                     _scrollState = ScrollState.Accel;
-                                    
                     AdvanceSelection(_currentScrollDir);
-                    
                     UpdateEdgeElement(_currentScrollDir);
-                    
                     MoveAllDisplayElements(_moveIncrementDistance, LeanTweenType.linear, decelerationTime,
                         UpdateMovement);
                         
                     OnScrollContinueOnStart?.Invoke(_moveIncrementDistance);
                 }
-
                 else
                 {
                     // Input buffered
@@ -236,9 +229,7 @@ namespace Dmicade
                         OnScrollContinueStop?.Invoke();
                         _scrollState = ScrollState.Stop;
                     }
-                    
                 }
-                
             }
 
             // Deceleration done.
@@ -253,7 +244,6 @@ namespace Dmicade
                 // Default: stop at selection
                 else
                     _scrollState = ScrollState.Stop;
-                
             }
         }
 

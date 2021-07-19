@@ -3,7 +3,7 @@
 	"gameFormats": ["1p"],
 	
     "logo": "aliensoldier_banner.png",
-    "images": [],
+    "images": ["sc_1.jpg", "sc_2.jpg"],
     "videos": [],
     
 	"genre": 		"Action, Shooter",

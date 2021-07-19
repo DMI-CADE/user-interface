@@ -87,8 +87,9 @@ namespace Dmicade
 
                     break;
                 }
-
-                AppData[appName].LoadLogoSprite(appsLocation); // TODO load async
+                // TODO load async
+                AppData[appName].LoadLogoSprite(appsLocation);
+                AppData[appName].LoadPreviewImages(appsLocation);
             }
         }
     }

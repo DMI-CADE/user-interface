@@ -12,13 +12,20 @@ namespace Dmicade
     {
         public TextMeshProUGUI headerTextSingleLine;
         public VideoPlayer previewVideoPlayer;
-        public RawImage videoDisplay;
+        public GameObject videoDisplay;
+        public RectTransform previewImage;
+        public GameObject noMediaAvailableIndicator;
         public TextMeshProUGUI textInfoDescriptor;
         public TextMeshProUGUI textInfoData;
         public ModeInfo modeInfo;
         public BorderedContainer moreInfoIndicator;
         
         public int availableDataCharacters = 17;
+
+        void Awake()
+        {
+            previewImage.gameObject.GetComponent<Image>().preserveAspect = true;
+        }
 
         ///<summary>Updates the header of the info panel.</summary> TODO doc
         public void SetTitle(string title, string altTitle=null)
@@ -29,15 +36,31 @@ namespace Dmicade
             }
         }
 
+        public void ShowNoMediaAvailable() => noMediaAvailableIndicator.SetActive(true);
+        
+        public void HideNoMediaAvailable() => noMediaAvailableIndicator.SetActive(false);
+
+        public void ShowPreviewImage() => previewImage.gameObject.SetActive(true);
+
+        public void HidePreviewImage() => previewImage.gameObject.SetActive(false);
+
         public void SetVideoUri(string videoUri)
         { 
             previewVideoPlayer.Stop();
             previewVideoPlayer.url = videoUri;
         }
 
-        public void PlayVideo() => previewVideoPlayer.Play();
+        public void PlayVideo()
+        {
+            videoDisplay.SetActive(true);
+            previewVideoPlayer.Play();
+        }
 
-        public void StopVideo() => previewVideoPlayer.Stop();
+        public void StopVideo()
+        {
+            videoDisplay.SetActive(false);
+            previewVideoPlayer.Stop();
+        }
 
         public void SetGameModes(GameMode[] modeConfig) => modeInfo.UpdateModeInfo(modeConfig);
         

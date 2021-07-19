@@ -4,7 +4,7 @@
 	"gameFormats": ["vs", "1p", "coop"],
 	
     "logo": "logo.png",
-    "images": ["screenshot_1.png"],
+    "images": ["ui_mockup1.png", "ui_mockup2_1.png", "screenshot_1.png"],
     "videos": ["trailer.mp4"],
     
 	"genre": 		"<GENRE>",

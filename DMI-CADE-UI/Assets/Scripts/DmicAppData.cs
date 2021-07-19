@@ -17,13 +17,14 @@ namespace Dmicade
 
         public string displayName;
         public string altDisplayName;
-        public string[] gameFormats;
-        public GameMode[] parsedGameModes;
+        public string[] gameFormats = new string[0];
+        public GameMode[] parsedGameModes = new GameMode[0];
 
         // Media
         public string logo;
-        public string[] images;
-        public string[] videos;
+        public string[] images = new string[0];
+        public Sprite[] previewSprites = new Sprite[0];
+        public string[] videos = new string[0];
         
         //Info
         public string genre;
@@ -100,9 +101,38 @@ namespace Dmicade
                 PixelsPerUnit);
         }
 
+        public void LoadPreviewImages(string appsLocation)
+        {
+            List<Sprite> sprites = new List<Sprite>();
+            
+            foreach (string imageName in images)
+            {
+                try
+                {
+                    var imageTexture = LoadImage(appsLocation, imageName);
+                    if (imageTexture == null) continue;
+                    
+                    var newSprite = Sprite.Create(imageTexture,
+                        new Rect(0, 0, imageTexture.width, imageTexture.height), 
+                        new Vector2(0, 0), 
+                        PixelsPerUnit);
+                    
+                    sprites.Add(newSprite);
+                }
+                catch (UnauthorizedAccessException e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
+
+            previewSprites = sprites.ToArray();
+        }
+
         /// Use only when <see cref="Name"/> is set correctly. TODO doc
         public void SetVideoPaths(string dmicAppsLocation)
         {
+            if (videos == null) return;
+            
             ArrayList videoUris = new ArrayList();
             for (int i = 0; i < videos.Length; i++)
             {
@@ -167,10 +197,6 @@ namespace Dmicade
             parsedGameModes = modes.ToArray();
         }
         
-        /// <summary>
-        /// TODO doc
-        /// </summary>
-        /// <returns></returns>
         public override string ToString()
         {
             return "Name: " + Name +

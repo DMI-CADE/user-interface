@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 namespace Dmicade
 {
@@ -18,6 +19,7 @@ namespace Dmicade
         public LeanTweenType dragReliefEaseType;
         public float dragStrength = 0.1f;
         public float rotateAmount;
+        public float displayTimePerFrame = 2f;
 
         private ContentDataManager _contentDataManager;
         private ContentDisplayManager _cdm;
@@ -52,6 +54,8 @@ namespace Dmicade
             _cdm.OnScrollEnable += SetGameModes;
             
             _syncTimer.OnTick += infoPanel.ShowNextGameMode;
+
+            infoPanel.previewVideoPlayer.loopPointReached += VideoDone;
         }
 
         private void SelectionChange(string selection)
@@ -61,12 +65,8 @@ namespace Dmicade
             var app = _contentDataManager.GetApp(selection);
             infoPanel.SetTitle(app.displayName);
 
-            if (app.videos.Length > 0)
-            {
-                infoPanel.SetVideoUri(app.GetRandomVideo());
-                infoPanel.PlayVideo();
-            }
-
+            DisplayPreview(selection);
+            
             infoPanel.SetBaseInfo(app);
         }
 
@@ -89,6 +89,62 @@ namespace Dmicade
         
         private void DisengageDrag() => DisengageDrag(Vector3.zero);
 
+        private void DisplayPreview(string activeApp)
+        {
+            DeactivateAllPreviews();
+            var app = _contentDataManager.GetApp(activeApp);
+
+            // No media.
+            if (app.videos.Length == 0 && app.previewSprites.Length == 0)
+                infoPanel.ShowNoMediaAvailable();
+            // Play video.
+            else if (app.videos.Length > 0)
+                PlayRandomVideo(app);
+            // Show images.
+            else
+                ShowPreviewImages();
+        }
+
+        /// Call only when a video is configured.
+        private void PlayRandomVideo(DmicAppData app)
+        {
+            infoPanel.SetVideoUri(app.GetRandomVideo());
+            infoPanel.PlayVideo();
+        }
+
+        private void ShowPreviewImages()
+        {
+            var app = _contentDataManager.GetApp(_cdm.GetSelectedApp());
+
+            // Do not show images when not configured. Early out for when called as vid done callback.
+            if (app.previewSprites.Length == 0)
+            {
+                DisplayPreview(_cdm.GetSelectedApp());
+                return;
+            }
+
+            infoPanel.ShowPreviewImage();
+            LeanTween.play(infoPanel.previewImage, app.previewSprites)
+                .setRepeat(1)
+                .setTime(app.previewSprites.Length * displayTimePerFrame)
+                .setOnComplete(() => DisplayPreview(_cdm.GetSelectedApp()));
+        }
+        
+        private void VideoDone(VideoPlayer videoPlayer)
+        {
+            infoPanel.StopVideo();
+            ShowPreviewImages();
+        }
+
+        private void DeactivateAllPreviews()
+        {
+            LeanTween.cancel(infoPanel.previewImage);
+            infoPanel.HideNoMediaAvailable();
+            infoPanel.HidePreviewImage();
+            infoPanel.StopVideo();
+        }
+
+        
         private void ShowMoreInfoIndicator(Vector3 d)
         {
             if (_contentDataManager.GetApp(_cdm.GetSelectedApp()).moreInfoText.Length > 0)
