@@ -10,7 +10,7 @@ namespace Dmicade
     {
         public static ContentDataManager Instance { get; private set; }
         
-        public string DmicAppsProjectRelativePath;
+        public string dmicAppsProjectRelativePath;
         
         private Dictionary<string, DmicAppData> AppData = new Dictionary<string, DmicAppData>();
 
@@ -27,16 +27,24 @@ namespace Dmicade
 
         private void Awake()
         {
+            if (Instance != null)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            
             Instance = this;
+            DontDestroyOnLoad(gameObject);
 
             //Debug.Log($"datapath: {Application.dataPath}");
-            //Debug.Log($"DmicAppsProjectRelativePath '{DmicAppsProjectRelativePath}'");
+            //Debug.Log($"dmicAppsProjectRelativePath '{dmicAppsProjectRelativePath}'");
             // Get path to repo.
-            bool useCustomPath = true;
+            bool useCustomPath = false;
             string dmicAppsLocation = Application.dataPath.Replace(@"DMI-CADE-UI/Assets", "");
-            if (DmicAppsProjectRelativePath.Length > 0)
+            Debug.Log(dmicAppsProjectRelativePath.Length);
+            if (dmicAppsProjectRelativePath.Length > 0)
             {
-                string customPath = Path.Combine(dmicAppsLocation, DmicAppsProjectRelativePath);
+                string customPath = Path.Combine(dmicAppsLocation, dmicAppsProjectRelativePath);
                 useCustomPath = Directory.Exists(customPath);
                 
                 if (useCustomPath)
@@ -56,7 +64,7 @@ namespace Dmicade
                 dmicAppsLocation = Path.Combine(Application.dataPath, @"../../dmic-apps");
             }
 
-            Debug.Log($"Path: {dmicAppsLocation}");
+            Debug.Log($"Used apps location: {dmicAppsLocation}");
             LoadAppData(dmicAppsLocation);
         }
 

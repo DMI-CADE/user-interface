@@ -2895,12 +2895,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 836242099}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0.19936788, z: -0, w: 0.97992474}
+  m_LocalPosition: {x: 473.3568, y: -572.5, z: -1895.747}
+  m_LocalScale: {x: 199.99997, y: 200, z: 199.99997}
   m_Children: []
-  m_Father: {fileID: 1903522291}
-  m_RootOrder: 0
+  m_Father: {fileID: 1920273168}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &840170089
 GameObject:
@@ -3551,7 +3551,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!224 &1110191272
 RectTransform:
@@ -4673,7 +4673,7 @@ GameObject:
   - component: {fileID: 1379749266}
   m_Layer: 5
   m_Name: MoreInfoOverlay
-  m_TagString: Untagged
+  m_TagString: MoreInfoOverlay
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4933,7 +4933,7 @@ GameObject:
   - component: {fileID: 1414633648}
   m_Layer: 0
   m_Name: ContentDisplayManager
-  m_TagString: Untagged
+  m_TagString: ContentDisplayManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6040,7 +6040,7 @@ GameObject:
   - component: {fileID: 1696149160}
   - component: {fileID: 1696149161}
   m_Layer: 0
-  m_Name: SceneManager
+  m_Name: DmicSceneManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7366,7 +7366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 374c64bebf336b349abf0de14b31ae82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DmicAppsProjectRelativePath: ../vm_shared_folder/dmic-apps_
+  dmicAppsProjectRelativePath: ../vm_shared_folder/dmic-apps_
 --- !u!4 &1903522291
 Transform:
   m_ObjectHideFlags: 0
@@ -7377,8 +7377,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 836242101}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7417,6 +7416,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2069664758}
+  - {fileID: 836242101}
   m_Father: {fileID: 69675834}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

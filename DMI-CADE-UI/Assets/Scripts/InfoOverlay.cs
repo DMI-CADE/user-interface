@@ -30,8 +30,8 @@ namespace Dmicade
         // Start is called before the first frame update
         void Start()
         {
-            textContainer.SetClosed();
-            interactionIndicator.SetClosed();
+            textContainer.SetClosed(false);
+            interactionIndicator.SetClosed(false);
         }
 
         void Update()
@@ -66,7 +66,7 @@ namespace Dmicade
         private void OverlayClosed()
         {
             _canvas.enabled = false;
-            SceneManager.Instance.ChangeState(SceneState.Scroll);
+            DmicSceneManager.Instance.ChangeState(SceneState.Scroll);
         }
     }
 }

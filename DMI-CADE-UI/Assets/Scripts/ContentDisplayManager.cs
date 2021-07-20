@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using DmicInputHandler;
 using Pooling;
 using Unity.Mathematics;
@@ -66,18 +67,20 @@ namespace Dmicade
             _appOrder = _contentDataManager.AppNames;
             Array.Sort(_appOrder);
             Debug.Log("App Order: " + String.Join(", ", _appOrder));
-            
-            FillDisplayElements();
-            InitialDisplayElementsSetup();
-            
-            _rearmostAnchor = _selectedElementPosition - (elementSpacing * (overlappingElements + 1)) * scrollDirection;
-            _foremostAnchor = _selectedElementPosition +
-                              (elementSpacing * (_displayElements.Length - overlappingElements)) * scrollDirection;
+
+            _selectedData = Array.IndexOf(_appOrder, DmicSceneManager.Instance.LastRunningApp);
+            _selectedData = _selectedData < 0 ? 0 : _selectedData; // When 'LastRunningApp' not found/is null start at 0.
         }
 
         // Start is called before the first frame update
         void Start()
         {
+            FillDisplayElements();
+            InitialDisplayElementsSetup();
+
+            _rearmostAnchor = _selectedElementPosition - (elementSpacing * (overlappingElements + 1)) * scrollDirection;
+            _foremostAnchor = _selectedElementPosition +
+                           (elementSpacing * (_displayElements.Length - overlappingElements)) * scrollDirection;
             OnSelectionChange?.Invoke(_appOrder[_selectedData]);
         }
         
@@ -86,6 +89,7 @@ namespace Dmicade
         {
             if (!_scrollActive) return;
             
+            // Scroll forward.
             if (InputHandler.GetButtonDown(DmicButton.P1Up))
             {
                 _inputTimeStamp = Time.time;
@@ -96,6 +100,7 @@ namespace Dmicade
                     StartMovement(ScrollDir.Forward);
                 }
             }
+            // Scroll backwards.
             else if (InputHandler.GetButtonDown(DmicButton.P1Down))
             {
                 _inputTimeStamp = Time.time;
@@ -106,17 +111,21 @@ namespace Dmicade
                     StartMovement(ScrollDir.Backwards);
                 }
             }
-            else if (InputHandler.GetButtonDown(DmicButton.P1Start) || InputHandler.GetButtonDown(DmicButton.P2Start))
-            {
-                // Start Game
-            }
+            // Show more info.
             else if (_scrollState == ScrollState.Stop && InputHandler.GetButtonDown(DmicButton.P1F))
             {
                 if (SelectionHasAdditionalInfo())
                 {
                     DisableScroll();
-                    SceneManager.Instance.ChangeState(SceneState.InfoOverlay, _appOrder[_selectedData]);
+                    DmicSceneManager.Instance.ChangeState(SceneState.InfoOverlay, _appOrder[_selectedData]);
                 }
+            }
+            // Start game.
+            else if (_scrollState == ScrollState.Stop && 
+                     (InputHandler.GetButtonDown(DmicButton.P1Start) || InputHandler.GetButtonDown(DmicButton.P2Start)))
+            {
+                DisableScroll();
+                DmicSceneManager.Instance.ChangeState(SceneState.InGame, _appOrder[_selectedData]);
             }
         }
 

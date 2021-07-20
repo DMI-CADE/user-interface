@@ -94,10 +94,14 @@ namespace Dmicade
             OnOpened?.Invoke();
         }
         
-        public void SetClosed()
+        public void SetClosed(bool invokeEvent=true)
         {
             StartClose();
-            ClosedDone();
+            _image.enabled = false;
+            _rectTransform.sizeDelta = _smallestSize * Vector2.one;
+
+            IsOpen = false;
+            if (invokeEvent) OnClosed?.Invoke();
         }
 
         private void StartClose()
