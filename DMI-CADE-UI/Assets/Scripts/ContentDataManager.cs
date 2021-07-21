@@ -93,6 +93,7 @@ namespace Dmicade
             foreach (string appFolder in appFolders)
             {
                 string appName = appFolder.Substring(appFolder.LastIndexOf('\\') + 1);
+                appName = appName.Substring(appName.LastIndexOf('/') + 1);
                 try
                 {
                     AppData.Add(appName, DmicAppData.CreateFromJson(appName, appsLocation));
