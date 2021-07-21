@@ -13,14 +13,15 @@ namespace UdsClient
         public byte[] byteBuffer = new byte[BufferSize];
     }
 
+    public class ConnectedEventArgs : EventArgs {}
+    public class DisconnectedEventArgs : EventArgs {}
+    public class MessageReceivedEventArgs : EventArgs { public string Msg { get; set; } }
+    public class MessageSendEventArgs : EventArgs { public string Msg { get; set; } }
+
     class PmClient
     {
-        public class ConnectedEventArgs : EventArgs {}
-        public class DisconnectedEventArgs : EventArgs {}
-        public class MessageReceivedEventArgs : EventArgs { public string Msg { get; set; } }
-        public class MessageSendEventArgs : EventArgs { public string Msg { get; set; } }
         private class StartSendEventArgs : EventArgs { public string Msg { get; set; } }
-
+        
         public event EventHandler<ConnectedEventArgs> Connected;
         public event EventHandler<DisconnectedEventArgs> Disconnected;
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
