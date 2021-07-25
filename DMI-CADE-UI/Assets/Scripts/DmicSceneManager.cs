@@ -58,7 +58,7 @@ namespace Dmicade
 
             _pmClient = new PmClient(DmicUdsPath);
 
-            _pmClient.MessageReceived += MessageReceived;
+            _pmClient.OnMessageReceived += MessageReceived;
 
             StartCoroutine(nameof(RunUdsClient));
         }
@@ -95,6 +95,7 @@ namespace Dmicade
         /// TODO doc
         public void ChangeState(SceneState state, string data=null)
         {
+            // Debug.Log("ChangeState: " + state + " : " + data);
             switch (state)
             {
                 case SceneState.EnableMenu:
@@ -163,6 +164,8 @@ namespace Dmicade
 
         private void MessageReceived(object source, MessageReceivedEventArgs args) 
         {
+            //Debug.Log($"received: {args.Msg}");
+
             switch (args.Msg)
             {
                 case "boot": // Initial startup.
@@ -177,7 +180,7 @@ namespace Dmicade
                     AppFailedToStart();
                     break;
 
-                case "game_not_found": // App not configured correctly.
+                case "app_not_found": // App not configured correctly.
                     AppFailedToStart();
                     break;
 
@@ -211,9 +214,15 @@ namespace Dmicade
         private IEnumerator RunUdsClient()
         {
             #if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX
-                _pmClient.Run(120);
+                yield return _pmClient.Run();
             #endif
             yield return null;
+        }
+
+        private void OnDestroy()
+        {
+            if (_pmClient != null)
+                _pmClient.Disconnect();
         }
     }
 }

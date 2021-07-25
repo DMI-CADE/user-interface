@@ -1,9 +1,10 @@
 using System;
-using System.Diagnostics;
+using System.Collections;
 using System.Net;
 using System.Text;
 using System.Net.Sockets;
 using System.Threading;
+using UnityEngine;
 
 namespace UdsClient
 {    
@@ -22,83 +23,69 @@ namespace UdsClient
     {
         private class StartSendEventArgs : EventArgs { public string Msg { get; set; } }
         
-        public event EventHandler<ConnectedEventArgs> Connected;
-        public event EventHandler<DisconnectedEventArgs> Disconnected;
-        public event EventHandler<MessageReceivedEventArgs> MessageReceived;
-        public event EventHandler<MessageSendEventArgs> MessageSend;
-        private event EventHandler<StartSendEventArgs> _StartSend;
+        public event EventHandler<ConnectedEventArgs> OnConnected;
+        public event EventHandler<DisconnectedEventArgs> OnDisconnected;
+        public event EventHandler<MessageReceivedEventArgs> OnMessageReceived;
+        public event EventHandler<MessageSendEventArgs> OnMessageSend;
+        private event EventHandler<StartSendEventArgs> _onStartSend;
 
-        private ManualResetEvent clientDone = new ManualResetEvent(false);
         public bool isConnected { get; private set; } = false;
         private string _socketPath = "";
+        private Socket client;
         
         public PmClient( string socketPath )
         {
             this._socketPath = socketPath;
         }
 
-        public void Run(int timeout, int connectingRetryDelayMs = 1000)
+        public IEnumerator Run(float connectingRetryDelay = 1f)
         {
-            clientDone.Reset();
-
             // var endPoint = new UnixDomainSocketEndPoint(this._socketPath);
             var endPoint = new UnixEndPoint(this._socketPath);
 
-            Stopwatch sWatch = new Stopwatch();
-            sWatch.Start();
             bool wasConnected = false;
+
+            yield return new WaitForSeconds(2f);
 
             while (!wasConnected)
             {
-                Console.WriteLine("Connecting...");
-
-                try
+                // Debug.Log("Connecting...");
+                
+                client = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified);
+                
+                try 
                 {
-                    using (Socket client = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified))
-                    {
-
-                        client.Connect(endPoint);
-                        Console.WriteLine("Connected to: " + this._socketPath);
-
-                        wasConnected = true;
-                        OnConnected();
-
-                        // Start asyc receive callbacks.
-                        StartAsyncReceive(client);
-
-                        // Add anonymous function to internal event handler.
-                        _StartSend += (object source, StartSendEventArgs args) => { StartAsyncSend(source, args, client); };
-
-                        clientDone.WaitOne();
-
-                        // Clear internal event handler.
-                        foreach(Delegate d in _StartSend.GetInvocationList()) {
-                            _StartSend -= (EventHandler<StartSendEventArgs>) d;
-                        }
-
-                        OnDisconnected();
-                    }
+                    client.Connect(endPoint);
+                    wasConnected = true;
                 }
                 catch (SocketException exception)
                 {
-                    Console.WriteLine(exception.Message);
+                    // Debug.Log("Connecting failed...");
+                    // Debug.Log(exception.Message);
                 }
 
-                if(sWatch.Elapsed.Seconds > timeout) 
-                {
-                    Console.WriteLine("Connection Timeout.");
-                    break;
+                if (!wasConnected) {
+                    yield return new WaitForSeconds(connectingRetryDelay);
+                    continue;
                 }
 
-                if(!wasConnected)
-                {
-                    //System.Console.WriteLine("Waiting " + connectingRetryDelayMs + "ms... " + sWatch.Elapsed);
-                    Thread.Sleep(connectingRetryDelayMs);
+                Debug.Log("Connected to: " + this._socketPath);
+
+                wasConnected = true;
+                Connected();
+
+                // Start asyc receive callbacks.
+                StartAsyncReceive(client);
+                
+                // Add anonymous function to internal event handler.
+                _onStartSend += (object source, StartSendEventArgs args) => { StartAsyncSend(source, args, client); };
+
+                while (isConnected) {
+                    yield return null;
                 }
             }
 
-            sWatch.Stop();
-            //Console.WriteLine("[CLIENT] Run end.");
+            // Debug.Log("[CLIENT] Run end.");
         }
 
         private void StartAsyncReceive(Socket client)
@@ -107,7 +94,7 @@ namespace UdsClient
             {
                 StateObject state = new StateObject();
                 state.socket = client;
-                //System.Console.WriteLine("[RECEIVE] Beginn Receive...");
+                //Debug.Log("[RECEIVE] Beginn Receive...");
                 client.BeginReceive(state.byteBuffer, 0, StateObject.BufferSize, 0, 
                     new AsyncCallback(ReceiveCallback), state);   
             }
@@ -119,7 +106,7 @@ namespace UdsClient
 
         private void ReceiveCallback(IAsyncResult ar)
         {
-            //System.Console.WriteLine("[RECEIVE CALLBACK] Start...");
+            //Debug.Log("[RECEIVE CALLBACK] Start...");
             try
             {
                 // Retrieve state from asynchronous state object.
@@ -130,41 +117,51 @@ namespace UdsClient
                 int bytesRead = client.EndReceive(ar);
 
                 if(bytesRead > 0){
-                    //System.Console.WriteLine("[RECEIVE CALLBACK] Received bytes...");
+                    //Debug.Log("[RECEIVE CALLBACK] Received bytes...");
                     String msg = Encoding.ASCII.GetString(state.byteBuffer, 0, bytesRead);
-                    //System.Console.WriteLine($"[RECEIVE CALLBACK] Msg received: {msg}");
-                    OnMessageReceived(msg);
+                    //Debug.Log($"[RECEIVE CALLBACK] Msg received: {msg}");
+                    MessageReceived(msg);
 
                     client.BeginReceive(state.byteBuffer, 0, StateObject.BufferSize, 0, 
                         new AsyncCallback(ReceiveCallback), state);
 
                 } else {
-                    //System.Console.WriteLine("[RECEIVE CALLBACK] Received no bytes.");
-                    clientDone.Set();
+                    //Debug.Log("[RECEIVE CALLBACK] Received no bytes.");
+                    Disconnect();
                 }
 
             }
             catch (Exception)
             {
-                //Console.WriteLine("Caught: " + e.ToString());
+                //Debug.Log("Caught: " + e.ToString());
             }
-            //System.Console.WriteLine("[RECEIVE CALLBACK] Done.");
+            //Debug.Log("[RECEIVE CALLBACK] Done.");
         }
 
         public void Send(string message)
         {
-            OnStartSend(message);
-            OnMessageSend(message);
+            StartSend(message);
+            MessageSend(message);
         }
 
         public void Disconnect()
         {
-            clientDone.Set();
+            // Clear internal event handler.
+            if (_onStartSend != null) {
+                foreach(Delegate d in _onStartSend.GetInvocationList()) {
+                    _onStartSend -= (EventHandler<StartSendEventArgs>) d;
+                }
+            }
+
+            Disconnected();
+
+            if (client != null)
+                client.Dispose();
         }
 
         private void StartAsyncSend(object source, StartSendEventArgs args, Socket client)
         {
-            //System.Console.WriteLine("[SEND] Sending Msg...");
+            //Debug.Log("[SEND] Sending Msg...");
 
             byte[] byteData = Encoding.ASCII.GetBytes(args.Msg);
 
@@ -180,49 +177,49 @@ namespace UdsClient
 
                 int bytesSend = client.EndSend(ar);
 
-                //System.Console.WriteLine($"[SEND CALLBACK] Done sending {bytesSend} bytes.");
+                //Debug.Log($"[SEND CALLBACK] Done sending {bytesSend} bytes.");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Debug.Log(e.ToString());
             }
         }
 
-        protected virtual void OnConnected()
+        protected virtual void Connected()
         {
-            //System.Console.WriteLine("Invoke 'OnConnect'...");
+            //Debug.Log("Invoke 'OnConnect'...");
             isConnected = true;
-            Connected?.Invoke(this, new ConnectedEventArgs());
+            OnConnected?.Invoke(this, new ConnectedEventArgs());
         }
 
-        protected virtual void OnDisconnected()
+        protected virtual void Disconnected()
         {
-            //System.Console.WriteLine("Invoke 'OnDisconnect'...");
+            //Debug.Log("Invoke 'OnDisconnect'...");
             isConnected = false;
-            Disconnected?.Invoke(this, new DisconnectedEventArgs());
+            OnDisconnected?.Invoke(this, new DisconnectedEventArgs());
         }
 
-        protected virtual void OnMessageReceived(string message)
+        protected virtual void MessageReceived(string message)
         {
-            //System.Console.WriteLine("Invoke 'OnMessageReceived'...");
-            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(){ Msg = message });
+            //Debug.Log($"Invoke 'OnMessageReceived': {message}");
+            OnMessageReceived?.Invoke(this, new MessageReceivedEventArgs(){ Msg = message });
         }
 
-        protected virtual void OnMessageSend(string message)
+        protected virtual void MessageSend(string message)
         {
-            //System.Console.WriteLine("Invoke 'OnMessageSend'...");
-            MessageSend?.Invoke(this, new MessageSendEventArgs(){ Msg = message });
+            //Debug.Log($"Invoke 'OnMessageSend' {message}");
+            OnMessageSend?.Invoke(this, new MessageSendEventArgs(){ Msg = message });
         }
-        protected virtual void OnStartSend(string message)
+        protected virtual void StartSend(string message)
         {
-            //System.Console.WriteLine("Invoke 'OnStartSend'...");
-            _StartSend?.Invoke(this, new StartSendEventArgs(){ Msg = message });
+            //Debug.Log("Invoke 'OnStartSend'...");
+            _onStartSend?.Invoke(this, new StartSendEventArgs(){ Msg = message });
         }
 
         private void PrintSocketState(Socket socket)
         {
-            System.Console.WriteLine($"socket not null: {socket != null}");
-            System.Console.WriteLine($"socket connected: {socket.Connected}");
+            Debug.Log($"socket not null: {socket != null}");
+            Debug.Log($"socket connected: {socket.Connected}");
         }
     }
 }
