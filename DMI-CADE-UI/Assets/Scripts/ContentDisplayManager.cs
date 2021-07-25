@@ -125,7 +125,7 @@ namespace Dmicade
                      (InputHandler.GetButtonDown(DmicButton.P1Start) || InputHandler.GetButtonDown(DmicButton.P2Start)))
             {
                 DisableScroll();
-                DmicSceneManager.Instance.ChangeState(SceneState.InGame, _appOrder[_selectedData]);
+                DmicSceneManager.Instance.ChangeState(SceneState.StartingApp, _appOrder[_selectedData]);
             }
         }
 

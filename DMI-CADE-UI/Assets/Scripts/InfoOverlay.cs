@@ -66,7 +66,7 @@ namespace Dmicade
         private void OverlayClosed()
         {
             _canvas.enabled = false;
-            DmicSceneManager.Instance.ChangeState(SceneState.Scroll);
+            DmicSceneManager.Instance.ChangeState(SceneState.InMenu);
         }
     }
 }

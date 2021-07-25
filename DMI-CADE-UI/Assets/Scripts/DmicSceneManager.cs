@@ -10,7 +10,13 @@ using UdsClient;
 
 namespace Dmicade
 {
-    public enum SceneState { None, EnableMenu, Scroll, InfoOverlay, StartApp, InGame }
+    public enum SceneState { None,
+        EnableMenu, // In the process of transitioning to 'InMenu'. Transitions to 'InMenu' in the next update call.
+        InMenu, // In menu, scrolling.
+        InfoOverlay, // Looking at the info overlay.
+        StartingApp, // Waiting for the app to start. In the process of transitioning to 'InGame'.
+        InGame
+    }
     
     public class DmicSceneManager : MonoBehaviour
     {
@@ -60,7 +66,7 @@ namespace Dmicade
         // Start is called before the first frame update
         void Start()
         {
-            ChangeState(SceneState.Scroll);
+            ChangeState(SceneState.InMenu);
         }
         
         // Update is called once per frame
@@ -68,41 +74,47 @@ namespace Dmicade
         {
             switch (_sceneState)
             {
-                case SceneState.InGame:
-                    if (Input.GetKeyDown(KeyCode.Z))
-                    {
-                        EnableMenu();
-                    }
+                case SceneState.EnableMenu:
+                    // Activate menu in next update call to ensure scene is loaded.
+                    ChangeState(SceneState.InMenu);
                     break;
                 
-                case SceneState.EnableMenu:
-                    ChangeState(SceneState.Scroll);
+                case SceneState.StartingApp:
+                    // Simulate receiving message: 'app_started:true'
+                    if (Input.GetKeyDown(KeyCode.B)) ChangeState(SceneState.InGame);
+                    break;
+                
+                case SceneState.InGame:
+                    // Simulate received message: 'activate'
+                    if (Input.GetKeyDown(KeyCode.N)) ChangeState(SceneState.EnableMenu);
                     break;
             }
         }
 
+        /// Always call this method when the state should change. It invokes necessary functions for the state change.
+        /// TODO doc
         public void ChangeState(SceneState state, string data=null)
         {
             switch (state)
             {
                 case SceneState.EnableMenu:
-                    SceneManager.LoadScene("MainScene");
+                    EnableMenu();
                     break;
                 
-                case SceneState.Scroll:
+                case SceneState.InMenu:
                     displayManager.EnableScroll();
+                    break;
+                
+                case SceneState.StartingApp:
+                    StartApp(data);
+                    break;
+                
+                case SceneState.InGame:
+                    AppStarted();
                     break;
                 
                 case SceneState.InfoOverlay:
                     infoOverlay.Enable(data);
-                    break;
-                
-                case SceneState.StartApp: 
-                    StartApp(data);
-                    break;
-
-                case SceneState.InGame:
-                    
                     break;
             }
 
@@ -122,19 +134,29 @@ namespace Dmicade
 
         private void EnableMenu()
         {
-            ChangeState(SceneState.EnableMenu);
+            SceneManager.LoadScene("MainScene");
         }
 
+        private void DeactivateMenu()
+        {
+            
+        }
+
+        private void AppStarted()
+        {
+            SceneManager.LoadScene("InGame");
+        }
+        
         private void AppFailedToStart()
         {
             // TODO DisplayAppStartFail();
             // TODO HideLoadingOverlay();
-            ChangeState(SceneState.Scroll);
+            ChangeState(SceneState.InMenu);
         }
 
-        private void AppCrashed()
+        private void SetCrashMsg()
         {
-
+            // TODO set crash msg 
         }
 
         private void MessageReceived(object source, MessageReceivedEventArgs args) 
@@ -145,8 +167,8 @@ namespace Dmicade
                     break;
 
                 case "app_started:true": // App start success.
-                    // TODO HideLoadingOverlay();
-                    SceneManager.LoadScene("InGame");
+                    // HideLoadingOverlay();
+                    ChangeState(SceneState.InGame);
                     break;
 
                 case "app_started:false": // App start failed.
@@ -158,18 +180,18 @@ namespace Dmicade
                     break;
 
                 case "app_closed": // App closed by menu button or on its own.
-                    EnableMenu();
                     break;
 
                 case "app_crashed": // App closed by menu button or on its own.
-                    AppCrashed();
+                    SetCrashMsg();
                     break;
 
                 case "activate": // Activate app selection menu.
-                    EnableMenu();
+                    ChangeState(SceneState.EnableMenu);
                     break;
 
                 case "deactivate": // Deactivate app selection.
+                    DeactivateMenu();
                     break;
 
                 case "idle_enter": // Enter idle.
