@@ -4219,6 +4219,30 @@ MonoBehaviour:
     pitch: 1
     loop: 0
     source: {fileID: 0}
+  - name: ButtonPress
+    clip: {fileID: 8300000, guid: bdb83d91c5ece9f48b4427ebec23181e, type: 3}
+    volume: 0.8
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: GameSelected
+    clip: {fileID: 8300000, guid: 08bee3407c0fa6a45809d4bfb1d63adf, type: 3}
+    volume: 0.8
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: MoreInfoOpen
+    clip: {fileID: 8300000, guid: b37624773453f894fbe1ceb8d3f2ce61, type: 3}
+    volume: 0.8
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: MoreInfoClose
+    clip: {fileID: 8300000, guid: 5dc2022b06edd8e45aaaa26666204c13, type: 3}
+    volume: 0.8
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
 --- !u!4 &1278203762
 Transform:
   m_ObjectHideFlags: 0
