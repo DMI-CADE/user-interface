@@ -28,8 +28,8 @@ namespace Dmicade
         public string LastRunningApp { get; private set; } = null;
         
         private SceneState _sceneState = SceneState.None;
-        
-        private string _dmicUdsPath = @"/tmp/dmicade_socket.s";
+
+        private const string DmicUdsPath = @"/tmp/dmicade_socket.s";
         private PmClient _pmClient;
         private Task _pmClientTask;
         
@@ -56,11 +56,11 @@ namespace Dmicade
                 return;
             }
 
-            _pmClient = new PmClient(_dmicUdsPath);
+            _pmClient = new PmClient(DmicUdsPath);
 
             _pmClient.MessageReceived += MessageReceived;
 
-            _pmClientTask = Task.Run(() => _pmClient.Run(120));
+            StartCoroutine(nameof(RunUdsClient));
         }
 
         // Start is called before the first frame update
@@ -129,7 +129,9 @@ namespace Dmicade
             // TODO ShowLoadingOverlay();
 
             // Send app selection to process manager.
-            _pmClient.Send($"start_app:{appId}");
+            #if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX
+                _pmClient.Send($"start_app:{appId}");
+            #endif
         }
 
         private void EnableMenu()
@@ -204,6 +206,14 @@ namespace Dmicade
                     Debug.LogWarning("Can not interpret message: " + args.Msg);
                     break;
             }
+        }
+
+        private IEnumerator RunUdsClient()
+        {
+            #if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX
+                _pmClient.Run(120);
+            #endif
+            yield return null;
         }
     }
 }
