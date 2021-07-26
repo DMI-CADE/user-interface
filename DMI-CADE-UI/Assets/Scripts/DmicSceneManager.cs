@@ -32,7 +32,8 @@ namespace Dmicade
         private const string DmicUdsPath = @"/tmp/dmicade_socket.s";
         private PmClient _pmClient;
         private Task _pmClientTask;
-        
+        private Queue<string> _receivedMessages = new Queue<string>();
+
         private void Awake()
         {
             if (Instance == null)
@@ -81,14 +82,16 @@ namespace Dmicade
                 
                 case SceneState.StartingApp:
                     // Simulate receiving message: 'app_started:true'
-                    if (Input.GetKeyDown(KeyCode.B)) ChangeState(SceneState.InGame);
+                    if (Input.GetKeyDown(KeyCode.B)) MessageReceived("app_started:true");
                     break;
                 
                 case SceneState.InGame:
                     // Simulate received message: 'activate'
-                    if (Input.GetKeyDown(KeyCode.N)) ChangeState(SceneState.EnableMenu);
+                    if (Input.GetKeyDown(KeyCode.N)) MessageReceived("activate");
                     break;
             }
+            
+            ProcessMessage();
         }
 
         /// Always call this method when the state should change. It invokes necessary functions for the state change.
@@ -138,6 +141,7 @@ namespace Dmicade
         private void EnableMenu()
         {
             SceneManager.LoadScene("MainScene");
+            // State changes in next update call for scroll activation.
         }
 
         private void DeactivateMenu()
@@ -162,11 +166,21 @@ namespace Dmicade
             // TODO set crash msg 
         }
 
-        private void MessageReceived(object source, MessageReceivedEventArgs args) 
+        private void MessageReceived(object source, MessageReceivedEventArgs args)
         {
-            //Debug.Log($"received: {args.Msg}");
+            Debug.Log($"received: {args.Msg}");
+            _receivedMessages.Enqueue(args.Msg);
+        }
 
-            switch (args.Msg)
+        private void MessageReceived(string msg) => MessageReceived(null, new MessageReceivedEventArgs() {Msg = msg});
+        
+        private void ProcessMessage()
+        {
+            if (_receivedMessages.Count == 0) return;
+            string msg = _receivedMessages.Dequeue();
+            Debug.Log($"Process msg: {msg}");
+            
+            switch (msg)
             {
                 case "boot": // Initial startup.
                     break;
@@ -196,7 +210,7 @@ namespace Dmicade
                     break;
 
                 case "deactivate": // Deactivate app selection.
-                    DeactivateMenu();
+                    // DeactivateMenu();
                     break;
 
                 case "idle_enter": // Enter idle.
@@ -206,7 +220,7 @@ namespace Dmicade
                     break;
 
                 default:
-                    Debug.LogWarning("Can not interpret message: " + args.Msg);
+                    Debug.LogWarning("Can not interpret message: " + msg);
                     break;
             }
         }
@@ -221,8 +235,7 @@ namespace Dmicade
 
         private void OnDestroy()
         {
-            if (_pmClient != null)
-                _pmClient.Disconnect();
+            _pmClient?.Disconnect();
         }
     }
 }
