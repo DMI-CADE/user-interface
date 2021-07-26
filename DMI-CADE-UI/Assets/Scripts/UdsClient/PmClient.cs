@@ -45,8 +45,6 @@ namespace UdsClient
 
             bool wasConnected = false;
 
-            yield return new WaitForSeconds(2f);
-
             while (!wasConnected)
             {
                 // Debug.Log("Connecting...");
