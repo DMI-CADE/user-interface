@@ -1,14 +1,22 @@
 using System;
+using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using Dmicade;
 using DmicInputHandler;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UdsClient;
 
 namespace Dmicade
 {
-    public enum SceneState { None, EnableMenu, Scroll, InfoOverlay, InGame }
+    public enum SceneState { None,
+        EnableMenu, // In the process of transitioning to 'InMenu'. Transitions to 'InMenu' in the next update call.
+        InMenu, // In menu, scrolling.
+        InfoOverlay, // Looking at the info overlay.
+        StartingApp, // Waiting for the app to start. In the process of transitioning to 'InGame'.
+        InGame
+    }
     
     public class DmicSceneManager : MonoBehaviour
     {
@@ -20,8 +28,12 @@ namespace Dmicade
         public string LastRunningApp { get; private set; } = null;
         
         private SceneState _sceneState = SceneState.None;
-        
-        
+
+        private const string DmicUdsPath = @"/tmp/dmicade_socket.s";
+        private PmClient _pmClient;
+        private Task _pmClientTask;
+        private Queue<string> _receivedMessages = new Queue<string>();
+
         private void Awake()
         {
             if (Instance == null)
@@ -39,13 +51,23 @@ namespace Dmicade
             infoOverlay.gameObject.SetActive(true);
             
             // Only leave Instance alive.
-            if (this != Instance) Destroy(gameObject);
+            if (this != Instance) 
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            _pmClient = new PmClient(DmicUdsPath);
+
+            _pmClient.OnMessageReceived += MessageReceived;
+
+            StartCoroutine(nameof(RunUdsClient));
         }
 
         // Start is called before the first frame update
         void Start()
         {
-            ChangeState(SceneState.Scroll);
+            ChangeState(SceneState.InMenu);
         }
         
         // Update is called once per frame
@@ -53,37 +75,50 @@ namespace Dmicade
         {
             switch (_sceneState)
             {
-                case SceneState.InGame:
-                    if (Input.GetKeyDown(KeyCode.Z))
-                    {
-                        EnableMenu();
-                    }
+                case SceneState.EnableMenu:
+                    // Activate menu in next update call to ensure scene is loaded.
+                    ChangeState(SceneState.InMenu);
                     break;
                 
-                case SceneState.EnableMenu:
-                    ChangeState(SceneState.Scroll);
+                case SceneState.StartingApp:
+                    // Simulate receiving message: 'app_started:true'
+                    if (Input.GetKeyDown(KeyCode.B)) MessageReceived("app_started:true");
+                    break;
+                
+                case SceneState.InGame:
+                    // Simulate received message: 'activate'
+                    if (Input.GetKeyDown(KeyCode.N)) MessageReceived("activate");
                     break;
             }
+            
+            ProcessMessage();
         }
 
+        /// Always call this method when the state should change. It invokes necessary functions for the state change.
+        /// TODO doc
         public void ChangeState(SceneState state, string data=null)
         {
+            // Debug.Log("ChangeState: " + state + " : " + data);
             switch (state)
             {
                 case SceneState.EnableMenu:
-                    SceneManager.LoadScene("MainScene");
+                    EnableMenu();
                     break;
                 
-                case SceneState.Scroll:
+                case SceneState.InMenu:
                     displayManager.EnableScroll();
+                    break;
+                
+                case SceneState.StartingApp:
+                    StartApp(data);
+                    break;
+                
+                case SceneState.InGame:
+                    AppStarted();
                     break;
                 
                 case SceneState.InfoOverlay:
                     infoOverlay.Enable(data);
-                    break;
-                
-                case SceneState.InGame:
-                    StartApp(data);
                     break;
             }
 
@@ -94,12 +129,113 @@ namespace Dmicade
         {
             Debug.Log("Start app: " + appId);
             LastRunningApp = appId;
-            SceneManager.LoadScene("InGame");
+
+            // TODO ShowLoadingOverlay();
+
+            // Send app selection to process manager.
+            #if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX
+                _pmClient.Send($"start_app:{appId}");
+            #endif
         }
 
         private void EnableMenu()
         {
-            ChangeState(SceneState.EnableMenu);
+            SceneManager.LoadScene("MainScene");
+            // State changes in next update call for scroll activation.
+        }
+
+        private void DeactivateMenu()
+        {
+            
+        }
+
+        private void AppStarted()
+        {
+            SceneManager.LoadScene("InGame");
+        }
+        
+        private void AppFailedToStart()
+        {
+            // TODO DisplayAppStartFail();
+            // TODO HideLoadingOverlay();
+            ChangeState(SceneState.InMenu);
+        }
+
+        private void SetCrashMsg()
+        {
+            // TODO set crash msg 
+        }
+
+        private void MessageReceived(object source, MessageReceivedEventArgs args)
+        {
+            Debug.Log($"received: {args.Msg}");
+            _receivedMessages.Enqueue(args.Msg);
+        }
+
+        private void MessageReceived(string msg) => MessageReceived(null, new MessageReceivedEventArgs() {Msg = msg});
+        
+        private void ProcessMessage()
+        {
+            if (_receivedMessages.Count == 0) return;
+            string msg = _receivedMessages.Dequeue();
+            Debug.Log($"Process msg: {msg}");
+            
+            switch (msg)
+            {
+                case "boot": // Initial startup.
+                    break;
+
+                case "app_started:true": // App start success.
+                    // HideLoadingOverlay();
+                    ChangeState(SceneState.InGame);
+                    break;
+
+                case "app_started:false": // App start failed.
+                    AppFailedToStart();
+                    break;
+
+                case "app_not_found": // App not configured correctly.
+                    AppFailedToStart();
+                    break;
+
+                case "app_closed": // App closed by menu button or on its own.
+                    break;
+
+                case "app_crashed": // App closed by menu button or on its own.
+                    SetCrashMsg();
+                    break;
+
+                case "activate": // Activate app selection menu.
+                    ChangeState(SceneState.EnableMenu);
+                    break;
+
+                case "deactivate": // Deactivate app selection.
+                    // DeactivateMenu();
+                    break;
+
+                case "idle_enter": // Enter idle.
+                    break;
+
+                case "idle_exit": // Exit idle.
+                    break;
+
+                default:
+                    Debug.LogWarning("Can not interpret message: " + msg);
+                    break;
+            }
+        }
+
+        private IEnumerator RunUdsClient()
+        {
+            #if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX
+                yield return _pmClient.Run();
+            #endif
+            yield return null;
+        }
+
+        private void OnDestroy()
+        {
+            _pmClient?.Disconnect();
         }
     }
 }

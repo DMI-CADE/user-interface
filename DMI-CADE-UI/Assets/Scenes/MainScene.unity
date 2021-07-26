@@ -3771,8 +3771,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spritesPixelPerUnit: 4
   pixelPerIncrement: 10
-  tweenTime: 1
-  useTimePerIncrement: 1
+  tweenTime: 0.3
+  useTimePerIncrement: 0
   timePerIncrement: 0.02
   containedElements:
   - {fileID: 1082151236}

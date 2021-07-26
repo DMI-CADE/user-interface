@@ -134,8 +134,9 @@ GameObject:
   - component: {fileID: 909671106}
   - component: {fileID: 909671105}
   - component: {fileID: 909671104}
+  - component: {fileID: 909671107}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: OverlayCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -206,6 +207,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &909671107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 909671103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60608dfab06d6d24099ebd757950422f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  runningAppText: {fileID: 1134503923}
 --- !u!1 &913376995
 GameObject:
   m_ObjectHideFlags: 0

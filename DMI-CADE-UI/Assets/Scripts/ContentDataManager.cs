@@ -41,7 +41,6 @@ namespace Dmicade
             // Get path to repo.
             bool useCustomPath = false;
             string dmicAppsLocation = Application.dataPath.Replace(@"DMI-CADE-UI/Assets", "");
-            Debug.Log(dmicAppsProjectRelativePath.Length);
             if (dmicAppsProjectRelativePath.Length > 0)
             {
                 string customPath = Path.Combine(dmicAppsLocation, dmicAppsProjectRelativePath);
@@ -102,7 +101,7 @@ namespace Dmicade
                     Debug.LogWarning("Could not load: " + appName + 
                                      "\nReason: " + dirNotFoundException.Message);
 
-                    break;
+                    continue;
                 }
                 // TODO load async
                 AppData[appName].LoadLogoSprite(appsLocation);
