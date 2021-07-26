@@ -4209,13 +4209,13 @@ MonoBehaviour:
   sounds:
   - name: MainTheme
     clip: {fileID: 8300000, guid: 63a84ebf9d62c324e9e1c0026e4edc0d, type: 3}
-    volume: 0.3
+    volume: 0.25
     pitch: 1
     loop: 1
     source: {fileID: 0}
   - name: ScrollSound
     clip: {fileID: 8300000, guid: dcb5d681f8cd5eb41891dba6c13a8c46, type: 3}
-    volume: 0.8
+    volume: 1
     pitch: 1
     loop: 0
     source: {fileID: 0}
@@ -4227,7 +4227,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: GameSelected
     clip: {fileID: 8300000, guid: 08bee3407c0fa6a45809d4bfb1d63adf, type: 3}
-    volume: 0.8
+    volume: 1
     pitch: 1
     loop: 0
     source: {fileID: 0}
