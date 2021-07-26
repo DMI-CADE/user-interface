@@ -101,7 +101,7 @@ namespace Dmicade
                     Debug.LogWarning("Could not load: " + appName + 
                                      "\nReason: " + dirNotFoundException.Message);
 
-                    break;
+                    continue;
                 }
                 // TODO load async
                 AppData[appName].LoadLogoSprite(appsLocation);
