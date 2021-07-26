@@ -48,6 +48,8 @@ namespace Dmicade
             
             _canvas.enabled = true;
             textContainer.Open();
+            FindObjectOfType<AudioManager>().Play("ButtonPress");
+            FindObjectOfType<AudioManager>().Play("MoreInfoOpen");
         }
 
         public void Disable()
@@ -55,6 +57,8 @@ namespace Dmicade
             IsOpen = false;
             textContainer.Close();
             interactionIndicator.Close();
+            FindObjectOfType<AudioManager>().Play("ButtonPress");
+            FindObjectOfType<AudioManager>().Play("MoreInfoClose");
         }
 
         private void OverlayOpened()

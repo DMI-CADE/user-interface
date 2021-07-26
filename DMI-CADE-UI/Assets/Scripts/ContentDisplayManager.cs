@@ -125,6 +125,7 @@ namespace Dmicade
                      (InputHandler.GetButtonDown(DmicButton.P1Start) || InputHandler.GetButtonDown(DmicButton.P2Start)))
             {
                 DisableScroll();
+                FindObjectOfType<AudioManager>().Play("GameSelected");
                 DmicSceneManager.Instance.ChangeState(SceneState.StartingApp, _appOrder[_selectedData]);
             }
         }
@@ -186,6 +187,8 @@ namespace Dmicade
             MoveAllDisplayElements(_moveIncrementDistance, accelerationType, accelerationTime, UpdateMovement);
             
             OnScrollStart?.Invoke(_moveIncrementDistance);
+
+            FindObjectOfType<AudioManager>().Play("ScrollSound");
         }
 
         /// Meant to be invoked once after the action of current _moveState is done. TODO doc
