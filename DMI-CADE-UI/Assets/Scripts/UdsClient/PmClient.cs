@@ -56,7 +56,7 @@ namespace UdsClient
                     client.Connect(endPoint);
                     wasConnected = true;
                 }
-                catch (SocketException exception)
+                catch (SocketException)
                 {
                     // Debug.Log("Connecting failed...");
                     // Debug.Log(exception.Message);

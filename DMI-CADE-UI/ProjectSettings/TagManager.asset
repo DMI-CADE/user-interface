@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ContentDisplayManager
   - MoreInfoOverlay
+  - LoadingOverlay
   layers:
   - Default
   - TransparentFX

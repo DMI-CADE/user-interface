@@ -24,6 +24,7 @@ namespace Dmicade
 
         public ContentDisplayManager displayManager;
         public InfoOverlay infoOverlay;
+        public LoadingIndicatorOverlay loadingOverlay;
 
         public string LastRunningApp { get; private set; } = null;
         
@@ -31,7 +32,6 @@ namespace Dmicade
 
         private const string DmicUdsPath = @"/tmp/dmicade_socket.s";
         private PmClient _pmClient;
-        private Task _pmClientTask;
         private Queue<string> _receivedMessages = new Queue<string>();
 
         private void Awake()
@@ -43,10 +43,12 @@ namespace Dmicade
             }
 
             // Set referenced objects.
-            Instance.displayManager = GameObject.FindWithTag("ContentDisplayManager")
+            Instance.displayManager = GameObject.FindWithTag("ContentDisplayManager")?
                 .GetComponent<ContentDisplayManager>();
-            Instance.infoOverlay = GameObject.FindWithTag("MoreInfoOverlay")
+            Instance.infoOverlay = GameObject.FindWithTag("MoreInfoOverlay")?
                 .GetComponent<InfoOverlay>();
+            Instance.loadingOverlay = GameObject.FindWithTag("LoadingOverlay")?
+                .GetComponent<LoadingIndicatorOverlay>();
 
             infoOverlay.gameObject.SetActive(true);
             
@@ -130,7 +132,7 @@ namespace Dmicade
             Debug.Log("Start app: " + appId);
             LastRunningApp = appId;
 
-            // TODO ShowLoadingOverlay();
+            loadingOverlay.Enable();
 
             // Send app selection to process manager.
             #if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX
@@ -151,6 +153,7 @@ namespace Dmicade
 
         private void AppStarted()
         {
+            loadingOverlay.Disable();
             SceneManager.LoadScene("InGame");
         }
         
