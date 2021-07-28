@@ -36,11 +36,23 @@ namespace Dmicade
 
         public event Action OnScrollEnable;
         public event Action OnScrollDisable;
+        
+        /// Invoked when scroll starts after stopping.
         public event Action<Vector3> OnScrollStart;
+        
+        /// Invoked when scrolling starts decelerating.
         public event Action<Vector3> OnScrollEnd;
+        
+        /// Invoked when instead of decelerating, the scrolling continues with linear speed.
         public event Action<Vector3> OnScrollContinueOnEnd;
+        
+        /// Invoked when continued scrolling but then stopping at a selection.
         public event Action OnScrollContinueStop;
+        
+        /// Invoked when still continue scrolling linearly after deceleration also continued linearly.
         public event Action<Vector3> OnScrollContinueOnStart;
+        
+        /// Invoked when the selected element changes. 
         public event Action<string> OnSelectionChange;
         
         private string[] _appOrder;
@@ -125,7 +137,6 @@ namespace Dmicade
                      (InputHandler.GetButtonDown(DmicButton.P1Start) || InputHandler.GetButtonDown(DmicButton.P2Start)))
             {
                 DisableScroll();
-                FindObjectOfType<AudioManager>().Play("GameSelected");
                 DmicSceneManager.Instance.ChangeState(SceneState.StartingApp, _appOrder[_selectedData]);
             }
         }
@@ -187,8 +198,6 @@ namespace Dmicade
             MoveAllDisplayElements(_moveIncrementDistance, accelerationType, accelerationTime, UpdateMovement);
             
             OnScrollStart?.Invoke(_moveIncrementDistance);
-
-            FindObjectOfType<AudioManager>().Play("ScrollSound");
         }
 
         /// Meant to be invoked once after the action of current _moveState is done. TODO doc

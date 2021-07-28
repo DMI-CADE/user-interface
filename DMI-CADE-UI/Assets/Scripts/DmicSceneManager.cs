@@ -27,6 +27,12 @@ namespace Dmicade
         public LoadingIndicatorOverlay loadingOverlay;
 
         public string LastRunningApp { get; private set; } = null;
+
+        /// Invoked when sending the msg to start game.
+        public event Action<string> OnAppStarting;
+        
+        /// Invoked when game could not start.
+        public event Action OnAppStartFailed;
         
         private SceneState _sceneState = SceneState.None;
 
@@ -134,6 +140,8 @@ namespace Dmicade
 
             loadingOverlay.Enable();
 
+            OnAppStarting?.Invoke(appId);
+
             // Send app selection to process manager.
             #if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX
                 _pmClient.Send($"start_app:{appId}");
@@ -171,7 +179,7 @@ namespace Dmicade
 
         private void MessageReceived(object source, MessageReceivedEventArgs args)
         {
-            Debug.Log($"received: {args.Msg}");
+            // Debug.Log($"received: {args.Msg}");
             _receivedMessages.Enqueue(args.Msg);
         }
 
@@ -181,7 +189,7 @@ namespace Dmicade
         {
             if (_receivedMessages.Count == 0) return;
             string msg = _receivedMessages.Dequeue();
-            Debug.Log($"Process msg: {msg}");
+            // Debug.Log($"Process msg: {msg}");
             
             switch (msg)
             {
