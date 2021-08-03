@@ -32,7 +32,7 @@ public class AudioManager : MonoBehaviour
 
         contentDisplayManager.OnScrollStart += (Vector3 v) => Play("ScrollSound");
         
-        DmicSceneManager.Instance.OnAppStarting += (string appId) => Play("GameSelected");
+        //DmicSceneManager.Instance.OnAppStarting += (string appId) => Play("GameSelected"); // TODO fix scene load issue
         
         infoOverlay.OnEnable += () => Play("ButtonPress");
         infoOverlay.OnEnable += () => Play("MoreInfoOpen");

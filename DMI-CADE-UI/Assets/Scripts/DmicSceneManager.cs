@@ -141,6 +141,8 @@ namespace Dmicade
             loadingOverlay.Enable();
 
             OnAppStarting?.Invoke(appId);
+            
+            FindObjectOfType<AudioManager>()?.Play("GameSelected"); // TODO fix scene loading issue
 
             // Send app selection to process manager.
             #if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX
