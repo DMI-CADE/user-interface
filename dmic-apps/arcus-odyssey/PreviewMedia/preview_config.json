@@ -4,7 +4,7 @@
 	"gameFormats": ["coop", "1p"],
 	
     "logo": "arcusodyssey_banner.png",
-    "images": [""],
+    "images": ["sc_1.png"],
     "videos": [""],
     
 	"genre": 		"Action",

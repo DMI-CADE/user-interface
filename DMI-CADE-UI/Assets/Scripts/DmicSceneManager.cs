@@ -89,8 +89,9 @@ namespace Dmicade
                     break;
                 
                 case SceneState.StartingApp:
-                    // Simulate receiving message: 'app_started:true'
+                    // Simulate receiving messages
                     if (Input.GetKeyDown(KeyCode.B)) MessageReceived("app_started:true");
+                    else if (Input.GetKeyDown(KeyCode.N)) MessageReceived("app_started:false");
                     break;
                 
                 case SceneState.InGame:
@@ -170,7 +171,10 @@ namespace Dmicade
         private void AppFailedToStart()
         {
             // TODO DisplayAppStartFail();
-            // TODO HideLoadingOverlay();
+            loadingOverlay.Disable();
+
+            OnAppStartFailed?.Invoke();
+
             ChangeState(SceneState.InMenu);
         }
 

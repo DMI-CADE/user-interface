@@ -31,6 +31,7 @@ public class AudioManager : MonoBehaviour
         }
 
         contentDisplayManager.OnScrollStart += (Vector3 v) => Play("ScrollSound");
+        contentDisplayManager.OnScrollContinueOnStart += (Vector3 v) => Play("ScrollSound");
         
         //DmicSceneManager.Instance.OnAppStarting += (string appId) => Play("GameSelected"); // TODO fix scene load issue
         

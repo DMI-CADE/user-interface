@@ -24,8 +24,8 @@ namespace Dmicade
 
             _cdm.OnScrollStart += MoveAccelerate;
             _cdm.OnScrollEnd += MoveDecelerate;
-            _cdm.OnScrollContinueOnStart += MoveContinue;
-            _cdm.OnScrollContinueOnEnd += MoveContinue;
+            _cdm.OnScrollContinueOnStart += MoveContinueOnEnd;
+            _cdm.OnScrollContinueOnEnd += MoveContinueOnEnd;
 
             _staticBottomGridMaterial = bottomGrid.GetComponent<Renderer>().material;
             _staticTopGridMaterial = topGrid.GetComponent<Renderer>().material;
@@ -39,7 +39,10 @@ namespace Dmicade
         private void MoveDecelerate(Vector3 distance) =>
             MoveGrids(distance, _cdm.decelerationTime, _cdm.decelerationType);
 
-        private void MoveContinue(Vector3 distance) => MoveGrids(distance,
+        private void MoveContinueOnStart(Vector3 distance) => MoveGrids(distance,
+            _cdm.accelerationTime, LeanTweenType.linear);
+
+        private void MoveContinueOnEnd(Vector3 distance) => MoveGrids(distance,
             _cdm.decelerationTime, LeanTweenType.linear);
 
         private void MoveGrids(Vector3 distance, float duration, LeanTweenType easeType) 
