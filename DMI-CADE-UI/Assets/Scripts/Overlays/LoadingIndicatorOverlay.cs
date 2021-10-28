@@ -25,7 +25,7 @@ public class LoadingIndicatorOverlay : MonoBehaviour
     {
         _indicatorActive = true;
         _canvas.enabled = true; 
-        StartCoroutine(nameof(AnimateLoadingChar));
+        StartCoroutine(AnimateLoadingChar());
     }
 
     public void Disable()
