@@ -14,8 +14,8 @@ namespace Dmicade
         EnableMenu, // In the process of transitioning to 'InMenu'. Transitions to 'InMenu' in the next update call.
         InMenu, // In menu, scrolling.
         InfoOverlay, // Looking at the info overlay.
-        StartingApp, // Waiting for the app to start. In the process of transitioning to 'InGame'.
-        InGame
+        StartingApp, // Waiting for the app to start. In the process of transitioning to 'InApp'.
+        InApp
     }
     
     public class DmicSceneManager : MonoBehaviour
@@ -28,10 +28,10 @@ namespace Dmicade
 
         public string LastRunningApp { get; private set; } = null;
 
-        /// Invoked when sending the msg to start game.
+        /// Invoked when sending the msg to start app.
         public event Action<string> OnAppStarting;
         
-        /// Invoked when game could not start.
+        /// Invoked when app could not start.
         public event Action OnAppStartFailed;
         
         private SceneState _sceneState = SceneState.None;
@@ -94,7 +94,7 @@ namespace Dmicade
                     else if (Input.GetKeyDown(KeyCode.N)) MessageReceived("app_started:false");
                     break;
                 
-                case SceneState.InGame:
+                case SceneState.InApp:
                     // Simulate received message: 'activate'
                     if (Input.GetKeyDown(KeyCode.N)) MessageReceived("activate");
                     break;
@@ -122,7 +122,7 @@ namespace Dmicade
                     StartApp(data);
                     break;
                 
-                case SceneState.InGame:
+                case SceneState.InApp:
                     AppStarted();
                     break;
                 
@@ -143,7 +143,7 @@ namespace Dmicade
 
             OnAppStarting?.Invoke(appId);
             
-            FindObjectOfType<AudioManager>()?.Play("GameSelected"); // TODO fix scene loading issue
+            FindObjectOfType<AudioManager>()?.Play("AppSelected"); // TODO fix scene loading issue
 
             // Send app selection to process manager.
             #if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX
@@ -165,7 +165,7 @@ namespace Dmicade
         private void AppStarted()
         {
             loadingOverlay.Disable();
-            SceneManager.LoadScene("InGame");
+            SceneManager.LoadScene("InApp");
         }
         
         private void AppFailedToStart()
@@ -204,7 +204,7 @@ namespace Dmicade
 
                 case "app_started:true": // App start success.
                     // HideLoadingOverlay();
-                    ChangeState(SceneState.InGame);
+                    ChangeState(SceneState.InApp);
                     break;
 
                 case "app_started:false": // App start failed.

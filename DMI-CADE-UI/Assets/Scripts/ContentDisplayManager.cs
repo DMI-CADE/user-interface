@@ -132,7 +132,7 @@ namespace Dmicade
                     DmicSceneManager.Instance.ChangeState(SceneState.InfoOverlay, _appOrder[_selectedData]);
                 }
             }
-            // Start game.
+            // Start app.
             else if (_scrollState == ScrollState.Stop && 
                      (InputHandler.GetButtonDown(DmicButton.P1Start) || InputHandler.GetButtonDown(DmicButton.P2Start)))
             {
