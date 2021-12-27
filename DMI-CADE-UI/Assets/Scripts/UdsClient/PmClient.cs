@@ -217,7 +217,7 @@ namespace UdsClient
         private void PrintSocketState(Socket socket)
         {
             Debug.Log($"socket not null: {socket != null}");
-            Debug.Log($"socket connected: {socket.Connected}");
+            Debug.Log($"socket connected: {socket?.Connected}");
         }
     }
 }
