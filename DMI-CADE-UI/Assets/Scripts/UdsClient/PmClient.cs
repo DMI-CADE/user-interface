@@ -30,8 +30,8 @@ namespace UdsClient
         private event EventHandler<StartSendEventArgs> _onStartSend;
 
         public bool isConnected { get; private set; } = false;
-        private string _socketPath = "";
-        private Socket client;
+        private readonly string _socketPath;
+        private Socket _client;
         
         public PmClient( string socketPath )
         {
@@ -49,11 +49,11 @@ namespace UdsClient
             {
                 // Debug.Log("Connecting...");
                 
-                client = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified);
+                _client = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified);
                 
                 try 
                 {
-                    client.Connect(endPoint);
+                    _client.Connect(endPoint);
                     wasConnected = true;
                 }
                 catch (SocketException)
@@ -73,10 +73,10 @@ namespace UdsClient
                 Connected();
 
                 // Start asyc receive callbacks.
-                StartAsyncReceive(client);
+                StartAsyncReceive(_client);
                 
                 // Add anonymous function to internal event handler.
-                _onStartSend += (object source, StartSendEventArgs args) => { StartAsyncSend(source, args, client); };
+                _onStartSend += (object source, StartSendEventArgs args) => { StartAsyncSend(source, args, _client); };
 
                 while (isConnected) {
                     yield return null;
@@ -153,8 +153,8 @@ namespace UdsClient
 
             Disconnected();
 
-            if (client != null)
-                client.Dispose();
+            if (_client != null)
+                _client.Dispose();
         }
 
         private void StartAsyncSend(object source, StartSendEventArgs args, Socket client)
