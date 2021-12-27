@@ -19,14 +19,39 @@ namespace UdsClient
     public class MessageReceivedEventArgs : EventArgs { public string Msg { get; set; } }
     public class MessageSendEventArgs : EventArgs { public string Msg { get; set; } }
 
+    /// <summary>
+    /// Class for connecting to a unix domain socket server from unity.
+    /// </summary>
+    /// This class is meant to be used on a linux operating system.
+    /// <example>
+    /// Cache a new instance of <see cref="PmClient"/> somewhere consistently.
+    /// Subscribe to necessary events.
+    /// In Unity run this function by calling <code>StartCoroutine(nameof(RunClient));</code> where 'RunClient' is a
+    /// function like: <code>private IEnumerator RunClient() { yield return _pmClient.Run(); }</code> and '_pmClient'
+    /// is the cached instance of <see cref="PmClient"/>.
+    /// Starts looking for the server, invoking <see cref="OnConnected"/> when connected.
+    /// Invokes <see cref="OnMessageReceived"/> when a message was received.
+    /// Use <see cref="Send"/> for sending a message to server.
+    /// Disconnects when connection is lost (ended by server) or <see cref="Disconnect"/> is called after being
+    /// connected.
+    /// </example>
     class PmClient
     {
         private class StartSendEventArgs : EventArgs { public string Msg { get; set; } }
         
         public event EventHandler<ConnectedEventArgs> OnConnected;
+
+        /// Invoked when disconnected.
         public event EventHandler<DisconnectedEventArgs> OnDisconnected;
+
+        /// Invoked when a message was received.
         public event EventHandler<MessageReceivedEventArgs> OnMessageReceived;
+
+        /// Invoked when a message was send.
         public event EventHandler<MessageSendEventArgs> OnMessageSend;
+
+        /// Invoked when starting internal asynchronous sending process. Use <see cref="OnMessageSend"/> for
+        /// getting notified when the client sent a message.
         private event EventHandler<StartSendEventArgs> _onStartSend;
 
         public bool isConnected { get; private set; } = false;
@@ -38,6 +63,13 @@ namespace UdsClient
             this._socketPath = socketPath;
         }
 
+        /// <summary>
+        /// The asynchronous function connecting and maintaining the connection to a Unix Domain Socket Server.
+        /// </summary>
+        /// It is recommended to only run this function in a linux environment.
+        /// <example><see cref="PmClient"/></example>
+        /// <param name="connectingRetryDelay"></param>
+        /// <returns></returns>
         public IEnumerator Run(float connectingRetryDelay = 1f)
         {
             // var endPoint = new UnixDomainSocketEndPoint(this._socketPath);
@@ -142,6 +174,9 @@ namespace UdsClient
             MessageSend(message);
         }
 
+        /// <summary>
+        /// Disconnects the client.
+        /// </summary>
         public void Disconnect()
         {
             // Clear internal event handler.
