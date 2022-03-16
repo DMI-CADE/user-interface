@@ -7,10 +7,10 @@
     "images": ["sc_1.png"],
     "videos": [""],
     
-	"genre": 		"Action",
-	"developer":	"Wolf Team",
-	"publisher": 	"Renovation Products, Inc.",
-	"release": 		"14.06.1991",
+	"info1": ["Genre", "Action"],
+	"info2": ["Developers", "Wolf Team"],
+	"info3": ["Publisher", "Renovation Products, Inc."],
+	"info4": ["Release", "14.06.1991"],
 	
 	"moreInfoText": ""
 }

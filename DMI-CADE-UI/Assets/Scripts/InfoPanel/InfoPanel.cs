@@ -20,7 +20,8 @@ namespace Dmicade
         public ModeInfo modeInfo;
         public BorderedContainer moreInfoIndicator;
         
-        public int availableDataCharacters = 17;
+        public int availableDescriptorCharacters = 10;
+        public int availableDataCharacters = 16;
 
         void Awake()
         {
@@ -77,29 +78,27 @@ namespace Dmicade
         {
             StringBuilder descriptorSb = new StringBuilder(app.descriptorFormatted);
             StringBuilder infoDataSb = new StringBuilder(app.infoFormatted);
-            
-            if (app.descriptorFormatted == null || app.descriptorFormatted == null)
+
+            if (app.descriptorFormatted == null || app.infoFormatted == null)
             {
-                string[] descriptor = {"Genre:", "Developer:", "Publisher:", "Release:"};
-                string[] infoData = {app.genre, app.developer, app.publisher, app.release};
-                for (int i = 0; i < descriptor.Length; i++)
+                string[] descriptors = {app.info1[0], app.info2[0], app.info3[0], app.info4[0]};
+                string[] infoData = {app.info1[1], app.info2[1], app.info3[1], app.info4[1]};
+
+                for (int i = 0; i < descriptors.Length; i++)
                 {
-                    if (infoData[i] == null) continue;
-                    
-                    if (infoData[i].Length > availableDataCharacters)
-                    {
-                        // TODO accurate/word based line break counting
-                        //Debug.Log($"{descriptor[i]}: {infoData[i].Length / availableDataCharacters + 1}");
-                        descriptorSb.Append(descriptor[i]+"\n");
-                        descriptorSb.Insert(descriptorSb.Length - 1, "\n", infoData[i].Length / availableDataCharacters);
-                        
-                        infoDataSb.AppendFormat("{0}\n", infoData[i]);
-                    }
-                    else
-                    {
-                        descriptorSb.AppendFormat("{0}\n", descriptor[i]);
-                        infoDataSb.AppendFormat("{0}\n", infoData[i]);
-                    }
+                    if (descriptors[i] == null || descriptors[i].Length == 0 || infoData[i] == null || infoData[i].Length == 0)
+                        continue;
+
+                    // Cut of descriptors if to long and add ':' if missing.
+                    descriptors[i] = descriptors[i].Length - 1 <= availableDescriptorCharacters ? descriptors[i] : descriptors[i].Substring(0, availableDescriptorCharacters);
+                    descriptors[i] = descriptors[i][descriptors[i].Length - 1] == ':' ? descriptors[i] : descriptors[i] + ':';
+
+                    //Debug.Log($"{descriptors[i]}: {infoData[i].Length / availableDataCharacters}");
+                    int approximateAdditionalLinebreaks = infoData[i].Length / availableDataCharacters;
+                    descriptorSb.Append(descriptors[i]+"\n");
+                    descriptorSb.Insert(descriptorSb.Length - 1, "\n", approximateAdditionalLinebreaks);
+
+                    infoDataSb.AppendFormat("{0}\n", infoData[i]);
                 }
 
                 // Cache formatted strings in data object.

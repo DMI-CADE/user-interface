@@ -27,10 +27,10 @@ namespace Dmicade
         public string[] videos = new string[0];
         
         //Info
-        public string genre;
-        public string developer;
-        public string publisher;
-        public string release;
+        public string[] info1 = new string[2];
+        public string[] info2 = new string[2];
+        public string[] info3 = new string[2];
+        public string[] info4 = new string[2];
 
         public string moreInfoText;
 
@@ -206,10 +206,10 @@ namespace Dmicade
                    "\nLogo path: " + logo + 
                    "\nImages: [" + String.Join(", ", images) + "]" +
                    "\nVideos: [" + String.Join(", ", videos) + "]" +
-                   "\nGenre: " + genre + 
-                   "\nDeveloper: " + developer + 
-                   "\nPublisher: " + publisher + 
-                   "\nRelease: " + release + 
+                   "\nInfo1: [" + String.Join(", ", info1) + "]" +
+                   "\nInfo2: [" + String.Join(", ", info2) + "]" +
+                   "\nInfo3: [" + String.Join(", ", info3) + "]" +
+                   "\nInfo4: [" + String.Join(", ", info4) + "]" +
                    "\nMoreInfoText: " +  moreInfoText;
         }
     }

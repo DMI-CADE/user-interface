@@ -7,10 +7,10 @@
     "images": [""],
     "videos": [""],
     
-	"genre": 		"Shooter",
-	"developer":	"Data East",
-	"publisher": 	"Data East",
-	"release": 		"1992",
+	"info1": ["Genre", "Shooter"],
+	"info2": ["Developers", "Data East"],
+	"info3": ["Publisher", "Data East"],
+	"info4": ["Release", "1992"],
 	
 	"moreInfoText": ""
 }

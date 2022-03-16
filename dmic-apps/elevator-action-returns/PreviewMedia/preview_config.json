@@ -7,10 +7,10 @@
     "images": [""],
     "videos": [""],
     
-	"genre": 		"Action",
-	"developer":	"Taito",
-	"publisher": 	"Taito",
-	"release": 		"1993",
+	"info1": ["Genre", "Action"],
+	"info2": ["Developers", "Taito"],
+	"info3": ["Publisher", "Taito"],
+	"info4": ["Release", "1993"],
 	
 	"moreInfoText": ""
 }
