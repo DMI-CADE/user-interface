@@ -1,9 +1,6 @@
 using System;
-using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
-using Dmicade;
-using DmicInputHandler;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UdsClient;
@@ -15,9 +12,10 @@ namespace Dmicade
         InMenu, // In menu, scrolling.
         InfoOverlay, // Looking at the info overlay.
         StartingApp, // Waiting for the app to start. In the process of transitioning to 'InApp'.
-        InApp
+        InApp,
+        Idle
     }
-    
+
     public class DmicSceneManager : MonoBehaviour
     {
         public static DmicSceneManager Instance;
@@ -30,10 +28,10 @@ namespace Dmicade
 
         /// Invoked when sending the msg to start app.
         public event Action<string> OnAppStarting;
-        
+
         /// Invoked when app could not start.
         public event Action OnAppStartFailed;
-        
+
         private SceneState _sceneState = SceneState.None;
 
         private const string DmicUdsPath = @"/tmp/dmicade_socket.s";
@@ -57,7 +55,7 @@ namespace Dmicade
                 .GetComponent<LoadingIndicatorOverlay>();
 
             infoOverlay.gameObject.SetActive(true);
-            
+
             // Only leave Instance alive.
             if (this != Instance) 
             {
@@ -77,7 +75,7 @@ namespace Dmicade
         {
             ChangeState(SceneState.InMenu);
         }
-        
+
         // Update is called once per frame
         void Update()
         {
@@ -87,19 +85,27 @@ namespace Dmicade
                     // Activate menu in next update call to ensure scene is loaded.
                     ChangeState(SceneState.InMenu);
                     break;
-                
+
+                case SceneState.InMenu:
+                    if (Input.GetKeyDown(KeyCode.V)) MessageReceived("idle_enter");
+                    break;
+
                 case SceneState.StartingApp:
                     // Simulate receiving messages
                     if (Input.GetKeyDown(KeyCode.B)) MessageReceived("app_started:true");
                     else if (Input.GetKeyDown(KeyCode.N)) MessageReceived("app_started:false");
                     break;
-                
+
                 case SceneState.InApp:
                     // Simulate received message: 'activate'
                     if (Input.GetKeyDown(KeyCode.N)) MessageReceived("activate");
                     break;
+
+                case SceneState.Idle:
+                    if (Input.GetKeyDown(KeyCode.V)) MessageReceived("activate");
+                    break;
             }
-            
+
             ProcessMessage();
         }
 
@@ -113,21 +119,25 @@ namespace Dmicade
                 case SceneState.EnableMenu:
                     EnableMenu();
                     break;
-                
+
                 case SceneState.InMenu:
                     displayManager.EnableScroll();
                     break;
-                
+
                 case SceneState.StartingApp:
                     StartApp(data);
                     break;
-                
+
                 case SceneState.InApp:
                     AppStarted();
                     break;
-                
+
                 case SceneState.InfoOverlay:
                     infoOverlay.Enable(data);
+                    break;
+
+                case SceneState.Idle:
+                    EnterIdle();
                     break;
             }
 
@@ -166,6 +176,11 @@ namespace Dmicade
         {
             loadingOverlay.Disable();
             SceneManager.LoadScene("InApp");
+        }
+
+        private void EnterIdle()
+        {
+            SceneManager.LoadScene("InIdle");
         }
         
         private void AppFailedToStart()
@@ -231,6 +246,7 @@ namespace Dmicade
                     break;
 
                 case "idle_enter": // Enter idle.
+                    ChangeState(SceneState.Idle);
                     break;
 
                 case "idle_exit": // Exit idle.
