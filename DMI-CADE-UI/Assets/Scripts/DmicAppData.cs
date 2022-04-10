@@ -132,12 +132,19 @@ namespace Dmicade
         public void SetVideoPaths(string dmicAppsLocation)
         {
             if (videos == null) return;
-            
+
             ArrayList videoUris = new ArrayList();
             for (int i = 0; i < videos.Length; i++)
             {
-                if (videos[i].Length != 0)
-                    videoUris.Add(Path.Combine(dmicAppsLocation, Name, @"PreviewMedia", videos[i]));
+                if (videos[i].Length != 0) {
+                    string vidPath = Path.Combine(dmicAppsLocation, Name, @"PreviewMedia", videos[i]);
+                    bool videoExists = File.Exists(vidPath);
+                    if (videoExists) {
+                        videoUris.Add(vidPath);
+                    } else {
+                        Debug.LogWarning($"Could not load video: {vidPath}");
+                    }
+                }
             }
 
             videos = (string[]) videoUris.ToArray(typeof(string));
