@@ -173,6 +173,10 @@ namespace Dmicade
         public void SetGameModes()
         {
             List<GameMode> modes = new List<GameMode>(1);
+
+            for (int i = 0; i < gameFormats.Length; i++) {
+                gameFormats[i] = gameFormats[i].ToLower();
+            }
             
             foreach (var modeStr in gameFormats)
             {
