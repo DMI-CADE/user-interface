@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/InApp.unity
     guid: 0b53ed12cc4da7245aeb95fb0d0dd906
+  - enabled: 1
+    path: Assets/Scenes/InIdle.unity
+    guid: 3119ca8ed98858742822bf0c94b6da82
   m_configObjects: {}
