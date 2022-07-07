@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.20749128, g: 0.21147479, b: 0.14576818, a: 1}
+  m_IndirectSpecularColor: {r: 0.20749143, g: 0.21147497, b: 0.14576834, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -255,7 +255,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: INFO TEXT
+  m_text: 'INFO TEXT 1
+
+    INFO TEXT 2
+
+    INFO TEXT 3
+
+    INFO TEXT 4'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d5b543ddad8efc9448972f6219a0d135, type: 2}
   m_sharedMaterial: {fileID: -8359445593742148317, guid: d5b543ddad8efc9448972f6219a0d135, type: 2}
@@ -2092,15 +2098,14 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ\n\nAlien Soldier
-    is a side-scrolling action game in which the player takes the role of Epsilon-Eagle,
-    the former leader of the Scarlet mutant group. The mutants are now lead by the
-    evil Xi-Tiger who had turned them to terrorism, and one of their goals is to
-    kill Epsilon-Eagle... \n\nAt the start of the game the player chooses four out
-    of six weapons - each with special advantages or disadvantages against certain
-    enemies. As mutant Epsilon-Eagle also has other special powers, e.g. teleporting
-    across the screen or (with full health) morphing into a powerful phoenix destroying
-    everything in his way.\n\n"
+  m_text: "ABCDEFGHIJKLMNOPQRSTUVWXYZ\n\nAlien Soldier is a side-scrolling action
+    game in which the player takes the role of Epsilon-Eagle, the former leader of
+    the Scarlet mutant group. The mutants are now lead by the evil Xi-Tiger who had
+    turned them to terrorism, and one of their goals is to kill Epsilon-Eagle...
+    \n\nAt the start of the game the player chooses four out of six weapons - each
+    with special advantages or disadvantages against certain enemies. As mutant Epsilon-Eagle
+    also has other special powers, e.g. teleporting across the screen or (with full
+    health) morphing into a powerful phoenix destroying everything in his way."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d5b543ddad8efc9448972f6219a0d135, type: 2}
   m_sharedMaterial: {fileID: -8359445593742148317, guid: d5b543ddad8efc9448972f6219a0d135, type: 2}
@@ -8057,7 +8062,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TOPTEXT TOPTEXT
+  m_text: TITLE TITLE TITLE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: fba00463dd034954988136e8fcf869ad, type: 2}
   m_sharedMaterial: {fileID: -4903004234810766912, guid: fba00463dd034954988136e8fcf869ad, type: 2}
@@ -9054,10 +9059,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2077837922}
     m_Modifications:
+    - target: {fileID: 3515608296063537037, guid: 1315fafa37283164895da2eb4877b36b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 4164641774365959205, guid: 1315fafa37283164895da2eb4877b36b, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 3b8bc89014576b44d8f6f4b3a9c72565, type: 3}
+      objectReference: {fileID: 21300000, guid: 393912c1bf4e7aa4b8b39358e2be9002, type: 3}
     - target: {fileID: 4164641774365959205, guid: 1315fafa37283164895da2eb4877b36b, type: 3}
       propertyPath: m_PreserveAspect
       value: 1

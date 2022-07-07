@@ -189,7 +189,7 @@ namespace Dmicade
             _currentScrollDir = scrollDir;
             
             AdvanceSelection(scrollDir);
-
+            UpdateHighlightingContrast(_currentScrollDir);
             UpdateEdgeElement(scrollDir);
 
             _scrollState = ScrollState.Accel;
@@ -232,6 +232,7 @@ namespace Dmicade
                 {
                     _scrollState = ScrollState.Accel;
                     AdvanceSelection(_currentScrollDir);
+                    UpdateHighlightingContrast(_currentScrollDir);
                     UpdateEdgeElement(_currentScrollDir);
                     MoveAllDisplayElements(_moveIncrementDistance, LeanTweenType.linear, decelerationTime,
                         UpdateMovement);
@@ -272,6 +273,24 @@ namespace Dmicade
         {
             return InputHandler.GetButton(DmicButton.P1Up) && _currentScrollDir == ScrollDir.Forward ||
                    InputHandler.GetButton(DmicButton.P1Down) && _currentScrollDir == ScrollDir.Backwards;
+        }
+
+        /// <summary>
+        ///  Updates display element hue highlighting. Call after selection advanced.
+        /// </summary>
+        /// <param name="scrollDir"></param>
+        private void UpdateHighlightingContrast(ScrollDir scrollDir)
+        {
+            if (scrollDir == ScrollDir.Forward)
+            {
+                _displayElements[Mod(_selectedElement - 1, _displayElements.Length)].Darken(accelerationTime);
+                _displayElements[_selectedElement].Brighten(accelerationTime);
+            }
+            else if (scrollDir == ScrollDir.Backwards)
+            {
+                _displayElements[Mod(_selectedElement + 1, _displayElements.Length)].Darken(accelerationTime);
+                _displayElements[_selectedElement].Brighten(accelerationTime);
+            }
         }
 
         /// Updates after advancing selected-values. TODO doc
@@ -388,8 +407,13 @@ namespace Dmicade
                 }
                 _displayElements[i].gameObject.SetActive(true);
                 _displayElements[i].name = _displayElements[i].name + " " + i;
+
+                // Set darkened hue
+                _displayElements[i].Darken(0f);
             }
-            
+
+            _displayElements[_selectedElement].Brighten(0f);
+
             //_displayElements[_displayElements.Length - 1].gameObject.SetActive(true); // Activate elem directly behind cam.
         }
 

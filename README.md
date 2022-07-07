@@ -2,4 +2,4 @@
 
 ---
 
-Current Unity version: 2020.3.30f1 (LTS)
+Current Unity version: 2020.3.33f1 (LTS)
