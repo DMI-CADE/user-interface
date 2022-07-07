@@ -82,6 +82,9 @@ namespace Dmicade
 
             _selectedData = Array.IndexOf(_appOrder, DmicSceneManager.Instance.LastRunningApp);
             _selectedData = _selectedData < 0 ? 0 : _selectedData; // When 'LastRunningApp' not found/is null start at 0.
+            _selectedData = DmicSceneManager.Instance.LastRunningApp == null
+                ? (int) (UnityEngine.Random.value * _appOrder.Length)
+                : _selectedData; // Select random element on initial startup.
         }
 
         // Start is called before the first frame update
