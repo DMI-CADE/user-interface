@@ -1,7 +1,7 @@
 {
-	"displayName": "Example App TEST",
+	"displayName": "Example App",
 	"altDisplayName": "Alt Name",
-	"gameFormats": ["1p", "_coop", "_vs"],
+	"gameFormats": ["_1p", "_coop", "vs"],
 	
     "logo": "logo.png",
     "images": ["ui_mockup1.png", "ui_mockup2_1.png", "screenshot_1.png"],

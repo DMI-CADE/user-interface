@@ -188,10 +188,14 @@ namespace Dmicade
                 {
                     modes.Add(GameMode.SingleP);
                 }
-
-            } else if(gameFormats.Contains("coop") || gameFormats.Contains("vs"))
+            }
+            else if (gameFormats.Contains("coop"))
             {
                 modes.Add(GameMode.Coop);
+            }
+            else if (gameFormats.Contains("vs"))
+            {
+                modes.Add(GameMode.Vs);
             }
 
             parsedGameModes = modes.ToArray();
