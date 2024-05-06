@@ -177,32 +177,21 @@ namespace Dmicade
             for (int i = 0; i < gameFormats.Length; i++) {
                 gameFormats[i] = gameFormats[i].ToLower();
             }
-            
-            foreach (var modeStr in gameFormats)
+
+            if (gameFormats.Contains("1p"))
             {
-                switch (modeStr)
+                if (gameFormats.Contains("coop") || gameFormats.Contains("vs"))
                 {
-                    case "1p":
-                        if(gameFormats.Contains("coop"))
-                            modes.Add(GameMode.SingleAndCoop);
-                        else
-                            modes.Add(GameMode.SingleP);
-                        break;
-                    case "coop":
-                        if(!gameFormats.Contains("1p"))
-                            modes.Add(GameMode.Coop);
-                        break;
-                    case "vs":
-                        modes.Add(GameMode.Vs);
-                        break;
-                    case "vs_cpu":
-                        modes.Add(GameMode.VsCpu);
-                        break;
-                    
-                    default:
-                        Debug.LogWarning($"Could not recognize game mode: {modeStr}");
-                        break;
+                    modes.Add(GameMode.SingleAndCoop);
                 }
+                else
+                {
+                    modes.Add(GameMode.SingleP);
+                }
+
+            } else if(gameFormats.Contains("coop") || gameFormats.Contains("vs"))
+            {
+                modes.Add(GameMode.Coop);
             }
 
             parsedGameModes = modes.ToArray();

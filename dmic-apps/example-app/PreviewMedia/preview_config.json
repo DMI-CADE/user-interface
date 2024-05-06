@@ -1,16 +1,16 @@
 {
-	"displayName": "Example App",
+	"displayName": "Example App TEST",
 	"altDisplayName": "Alt Name",
-	"gameFormats": ["vs", "1p", "coop"],
+	"gameFormats": ["1p", "_coop", "_vs"],
 	
     "logo": "logo.png",
     "images": ["ui_mockup1.png", "ui_mockup2_1.png", "screenshot_1.png"],
     "videos": ["trailer.mp4"],
     
-	"genre": 		"<GENRE>",
-	"developer":	"<NAME AAAAAAAA>, <NAME BBBBBBBB>, <NAME CCCCCCCC>, <NAME DDDDDDDD>",
-	"-publisher": 	"<PUBLISHER>",
-	"release": 		"12.34.5678",
+	"info1": ["genre", "<GENRE>"],
+	"info2": ["developer", "<NAME AAAAAAAA>, <NAME BBBBBBBB>, <NAME CCCCCCCC>, <NAME DDDDDDDD>"],
+	"info3": ["publisher", "<PUBLISHER>"],
+	"info4": ["release", "12.34.5678"],
 	
 	"moreInfoText": "<MORE_INFO>"
 }
